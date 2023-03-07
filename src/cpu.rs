@@ -1,4 +1,21 @@
-use crate::opcodes::{Opcode, OPCODES_MAP};
+use crate::opcodes::OPCODES_MAP;
+
+trait Mem {
+    fn mem_read(&self, addr: u16) -> u8;
+    fn mem_write(&mut self, addr: u16, data: u8);
+
+    fn mem_read_u16(&self, addr: u16) -> u16 {
+        let lo = self.mem_read(addr);
+        let hi = self.mem_read(addr.wrapping_add(1));
+        u16::from_le_bytes([lo, hi])
+    }
+
+    fn mem_write_u16(&mut self, addr: u16, data: u16) {
+        let [lo, hi] = data.to_le_bytes();
+        self.mem_write(addr, lo);
+        self.mem_write(addr.wrapping_add(1), hi);
+    }
+}
 
 pub struct CPU {
     pub program_counter: u16,
@@ -11,6 +28,17 @@ pub struct CPU {
     pub e: u8,
     pub h: u8,
     pub l: u8,
+    pub memory: [u8; 0xFFFF],
+}
+
+impl Mem for CPU {
+    fn mem_read(&self, addr: u16) -> u8 {
+        self.memory[addr as usize]
+    }
+
+    fn mem_write(&mut self, addr: u16, data: u8) {
+        self.memory[addr as usize] = data;
+    }
 }
 
 impl CPU {
@@ -26,6 +54,7 @@ impl CPU {
             status: 0,
             program_counter: 0,
             stack_pointer: 0,
+            memory: [0; 0xFFFF],
         }
     }
 
