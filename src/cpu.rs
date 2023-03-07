@@ -58,10 +58,19 @@ impl CPU {
         }
     }
 
-    pub fn run(&mut self, program: Vec<u8>) {
+    pub fn load_and_run(&mut self, program: Vec<u8>) {
+        for i in 0..(program.len() as u16) {
+            // TODO: implement MBC
+            self.mem_write(i, program[i as usize]);
+        }
+
+        self.run();
+    }
+
+    pub fn run(&mut self) {
         let ref all_opcodes = *OPCODES_MAP;
         loop {
-            let code = &program[self.program_counter as usize];
+            let code = &self.mem_read(self.program_counter);
             self.program_counter += 1;
             let pc_state = self.program_counter;
 
@@ -75,16 +84,21 @@ impl CPU {
                 0x02 => self.set_bc(self.a as u16),
                 // LD B,u8
                 0x06 => {
-                    let data = program[self.program_counter as usize];
+                    let data = self.mem_read(self.program_counter);
                     self.b = data;
                 }
                 // LD A,(BC)
-                // 0x0xA
+                0x0A => {
+                    let data = self.mem_read(self.get_bc());
+                    self.a = data;
+                }
+                // LD C,u8
+                0x0E => {}
                 _ => todo!(""),
             }
 
             if self.program_counter == pc_state {
-                self.program_counter += opcode.bytes as u16;
+                self.program_counter += opcode.bytes as u16 - 1;
             }
         }
     }
