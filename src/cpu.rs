@@ -137,16 +137,51 @@ impl CPU {
 }
 
 mod test {
-    use super::*;
 
-    #[test]
-    fn test_ld_addr_bc_a_0x02() {
-        let mut cpu = CPU::new();
-        cpu.b = 0x00;
-        cpu.c = 0x05;
-        cpu.a = 0x69;
-        cpu.load_and_run(vec![0x02, 0x10]);
+    mod load_store_move_8_bit {
+        #[allow(unused_imports)]
+        use super::super::*;
 
-        assert_eq!(cpu.get_data_at_bc(), cpu.a);
+        #[test]
+        fn test_ld_addr_bc_a_0x02() {
+            let mut cpu = CPU::new();
+            cpu.b = 0x00;
+            cpu.c = 0x05;
+            cpu.a = 0x69;
+            cpu.load_and_run(vec![0x02, 0x10]);
+
+            assert_eq!(cpu.get_data_at_bc(), cpu.a);
+        }
+
+        #[test]
+        fn test_ld_b_u8_0x06() {
+            let mut cpu = CPU::new();
+            cpu.b = 0x0E;
+            let data = 0xEF_u8;
+            cpu.load_and_run(vec![0x06, data, 0x10]);
+
+            assert_eq!(cpu.b, data);
+        }
+
+        #[test]
+        fn test_la_a_addr_bc_0x0a() {
+            let mut cpu = CPU::new();
+            cpu.b = 0x00;
+            cpu.c = 0x05;
+            cpu.set_data_at_bc(0x99);
+            cpu.load_and_run(vec![0x0A, 0x10]);
+
+            assert_eq!(cpu.get_data_at_bc(), cpu.a);
+        }
+
+        #[test]
+        fn test_ld_c_u8_0x0e() {
+            let mut cpu = CPU::new();
+            cpu.c = 0x0E;
+            let data = 0xEF_u8;
+            cpu.load_and_run(vec![0x0e, data, 0x10]);
+
+            assert_eq!(cpu.c, data);
+        }
     }
 }
