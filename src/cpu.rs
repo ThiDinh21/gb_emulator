@@ -82,7 +82,7 @@ impl CPU {
             match opcode.code {
                 //* 8-bit Load/Store/Move */
                 // LD (BC),A
-                0x02 => self.set_bc(self.a as u16),
+                0x02 => self.set_data_at_bc(self.a),
                 // LD B,u8
                 0x06 => {
                     let data = self.mem_read(self.program_counter);
@@ -120,4 +120,21 @@ impl CPU {
         self.b = hi;
         self.c = lo;
     }
+
+    /// get the data at the addr stored in register BC
+    fn get_data_at_bc(&self) -> u8 {
+        self.mem_read(self.get_bc())
+    }
+
+    /// set the data to the addr stored in register BC
+    fn set_data_at_bc(&mut self, data: u8) {
+        self.mem_write(self.get_bc(), data);
+    }
+}
+
+mod test {
+    use super::*;
+
+    // #[test]
+    // fn test_ld_addr_bc_a()
 }
