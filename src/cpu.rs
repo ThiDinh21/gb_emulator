@@ -226,5 +226,47 @@ mod test {
 
             assert_eq!(cpu.c, data);
         }
+
+        #[test]
+        fn test_ld_addr_de_a_0x12() {
+            let mut cpu = CPU::new();
+            cpu.d = 0x00;
+            cpu.e = 0x05;
+            cpu.a = 0x69;
+            cpu.load_and_run(vec![0x12, 0x10]);
+
+            assert_eq!(cpu.get_data_at_de(), cpu.a);
+        }
+
+        #[test]
+        fn test_ld_d_u8_0x16() {
+            let mut cpu = CPU::new();
+            cpu.d = 0x0E;
+            let data = 0xEF_u8;
+            cpu.load_and_run(vec![0x16, data, 0x10]);
+
+            assert_eq!(cpu.d, data);
+        }
+
+        #[test]
+        fn test_la_a_addr_de_0x1a() {
+            let mut cpu = CPU::new();
+            cpu.d = 0x00;
+            cpu.e = 0x05;
+            cpu.set_data_at_de(0x99);
+            cpu.load_and_run(vec![0x1A, 0x10]);
+
+            assert_eq!(cpu.get_data_at_de(), cpu.a);
+        }
+
+        #[test]
+        fn test_ld_e_u8_0x1e() {
+            let mut cpu = CPU::new();
+            cpu.e = 0x0E;
+            let data = 0xEF_u8;
+            cpu.load_and_run(vec![0x1e, data, 0x10]);
+
+            assert_eq!(cpu.e, data);
+        }
     }
 }
