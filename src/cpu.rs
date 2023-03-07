@@ -69,6 +69,7 @@ impl CPU {
 
     pub fn run(&mut self) {
         let ref all_opcodes = *OPCODES_MAP;
+
         loop {
             let code = &self.mem_read(self.program_counter);
             self.program_counter += 1;
@@ -93,7 +94,10 @@ impl CPU {
                     self.a = data;
                 }
                 // LD C,u8
-                0x0E => {}
+                0x0E => {
+                    let data = self.mem_read(self.program_counter);
+                    self.c = data;
+                }
                 _ => todo!(""),
             }
 
