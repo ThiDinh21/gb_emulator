@@ -2,14 +2,14 @@ use lazy_static::lazy_static;
 use std::collections::HashMap;
 
 pub struct Opcode {
-    pub code: u16,
+    pub code: u8,
     pub mnemonic: &'static str,
-    pub bytes: i8,
-    pub cycles: i8,
+    pub bytes: u8,
+    pub cycles: u8,
 }
 
 impl Opcode {
-    pub fn new(code: u16, mnemonic: &'static str, bytes: i8, cycles: i8) -> Self {
+    pub fn new(code: u8, mnemonic: &'static str, bytes: u8, cycles: u8) -> Self {
         Opcode {
             code,
             mnemonic,
@@ -28,7 +28,7 @@ lazy_static! {
         Opcode::new(0x0E, "LD C, d8", 2, 8),
         // Opcode::new(, , , ),
     ];
-    pub static ref CPU_OPCODES_MAP: HashMap<u16, &'static Opcode> = {
+    pub static ref OPCODES_MAP: HashMap<u8, &'static Opcode> = {
         let mut map = HashMap::new();
         for cpu_op in CPU_OPCODES.iter() {
             map.insert(cpu_op.code, cpu_op);
