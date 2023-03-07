@@ -67,7 +67,7 @@ impl CPU {
         self.run();
     }
 
-    pub fn run(&mut self) {
+    fn run(&mut self) {
         let ref all_opcodes = *OPCODES_MAP;
 
         loop {
@@ -80,7 +80,7 @@ impl CPU {
                 .expect(&format!("Opcode {:x} is not recognized", code));
 
             match opcode.code {
-                //* 8-bit Load/Store/Move */
+                //* 8-bit Load/Store/Move *//
                 // LD (BC),A
                 0x02 => self.set_data_at_bc(self.a),
                 // LD B,u8
@@ -98,6 +98,10 @@ impl CPU {
                     let data = self.mem_read(self.program_counter);
                     self.c = data;
                 }
+
+                //* control/branch *//
+                // STOP
+                0x10 => return,
                 _ => todo!(""),
             }
 
@@ -135,6 +139,14 @@ impl CPU {
 mod test {
     use super::*;
 
-    // #[test]
-    // fn test_ld_addr_bc_a()
+    #[test]
+    fn test_ld_addr_bc_a_0x02() {
+        let mut cpu = CPU::new();
+        cpu.b = 0x00;
+        cpu.c = 0x05;
+        cpu.a = 0x69;
+        cpu.load_and_run(vec![0x02, 0x10]);
+
+        assert_eq!(cpu.get_data_at_bc(), cpu.a);
+    }
 }

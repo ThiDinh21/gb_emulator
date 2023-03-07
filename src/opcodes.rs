@@ -26,6 +26,8 @@ lazy_static! {
         Opcode::new(0x06, "LD B, d8", 2, 8),
         Opcode::new(0x0A, "LD A, (BC)", 1, 8),
         Opcode::new(0x0E, "LD C, d8", 2, 8),
+        // control/branch
+        Opcode::new(0x10, "STOP", 1, 4),
         // Opcode::new(, , , ),
     ];
     pub static ref OPCODES_MAP: HashMap<u8, &'static Opcode> = {
