@@ -98,6 +98,23 @@ impl CPU {
                     let data = self.mem_read(self.program_counter);
                     self.c = data;
                 }
+                // LD (DE),A
+                0x12 => self.set_data_at_de(self.a),
+                // LD D,u8
+                0x16 => {
+                    let data = self.mem_read(self.program_counter);
+                    self.d = data;
+                }
+                // LD A,(DE)
+                0x1A => {
+                    let data = self.mem_read(self.get_de());
+                    self.a = data;
+                }
+                // LD E,u8
+                0x1E => {
+                    let data = self.mem_read(self.program_counter);
+                    self.e = data;
+                }
 
                 //* control/branch *//
                 // STOP
@@ -110,6 +127,8 @@ impl CPU {
             }
         }
     }
+
+    //* Register related methods *//
 
     /// get the register BC
     /// B hi, C lo
@@ -133,6 +152,30 @@ impl CPU {
     /// set the data to the addr stored in register BC
     fn set_data_at_bc(&mut self, data: u8) {
         self.mem_write(self.get_bc(), data);
+    }
+
+    /// get the register DE
+    /// D hi, E lo
+    fn get_de(&self) -> u16 {
+        u16::from_le_bytes([self.e, self.d])
+    }
+
+    /// set the register DE with data
+    /// D hi, E lo
+    fn set_de(&mut self, data: u16) {
+        let [lo, hi] = data.to_le_bytes();
+        self.d = hi;
+        self.e = lo;
+    }
+
+    /// get the data at the addr stored in register DE
+    fn get_data_at_de(&self) -> u8 {
+        self.mem_read(self.get_de())
+    }
+
+    /// set the data to the addr stored in register DE
+    fn set_data_at_de(&mut self, data: u8) {
+        self.mem_write(self.get_de(), data);
     }
 }
 
