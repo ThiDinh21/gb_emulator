@@ -116,7 +116,7 @@ impl CPU {
                 // LD (HL+),A
                 0x22 => {
                     self.set_data_at_hl(self.a);
-                    self.l = self.l.wrapping_add(1);
+                    self.set_hl(self.get_hl().wrapping_add(1));
                 }
                 // LD H,u8
                 0x26 => {
@@ -125,7 +125,7 @@ impl CPU {
                 // LD A,(HL+)
                 0x2A => {
                     self.a = self.get_data_at_hl();
-                    self.l = self.l.wrapping_add(1);
+                    self.set_hl(self.get_hl().wrapping_add(1));
                 }
                 // LD L,u8
                 0x2E => {
@@ -135,7 +135,7 @@ impl CPU {
                 // LD (HL-),A
                 0x32 => {
                     self.set_data_at_hl(self.a);
-                    self.l = self.l.wrapping_sub(1);
+                    self.set_hl(self.get_hl().wrapping_sub(1));
                 }
                 // LD (HL),u8
                 0x36 => {
@@ -145,7 +145,7 @@ impl CPU {
                 // LD A,(HL-)
                 0x3A => {
                     self.a = self.get_data_at_hl();
-                    self.l = self.l.wrapping_sub(1);
+                    self.set_hl(self.get_hl().wrapping_sub(1));
                 }
                 // LD A,u8
                 0x3E => {
