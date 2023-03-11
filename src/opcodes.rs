@@ -36,6 +36,11 @@ lazy_static! {
         Opcode::new(0x26, "LD H,u8", 2, 8),
         Opcode::new(0x2A, "LD A,(HL+)", 1, 8),
         Opcode::new(0x2E, "LD L,u8", 2, 8),
+
+        Opcode::new(0x32, "LD (HL-),A", 1, 8),
+        Opcode::new(0x36, "LD (HL),u8", 2, 8),
+        Opcode::new(0x3A, "LD A,(HL-)", 1, 8),
+        Opcode::new(0x3E, "LD A,u8", 2, 8),
         // Opcode::new(, , , ),
 
         // control/branch

@@ -132,6 +132,26 @@ impl CPU {
                     self.l = self.mem_read(self.program_counter);
                 }
 
+                // LD (HL-),A
+                0x32 => {
+                    self.set_data_at_hl(self.a);
+                    self.l = self.l.wrapping_sub(1);
+                }
+                // LD (HL),u8
+                0x36 => {
+                    let data = self.mem_read(self.program_counter);
+                    self.set_data_at_hl(data);
+                }
+                // LD A,(HL-)
+                0x3A => {
+                    self.a = self.get_data_at_hl();
+                    self.l = self.l.wrapping_sub(1);
+                }
+                // LD A,u8
+                0x3E => {
+                    self.a = self.mem_read(self.program_counter);
+                }
+
                 //* control/branch *//
                 // STOP
                 0x10 => return,
@@ -336,6 +356,35 @@ mod test {
 
             assert_eq!(data, cpu.a);
             assert_eq!(cpu.get_hl(), 0x0006);
+        }
+
+        #[test]
+        fn test_la_addr_hl_decr_a_0x32() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.h = 0x00;
+            cpu.l = 0x05;
+            let old_hl = cpu.get_hl();
+            cpu.a = data;
+            cpu.load_and_run(vec![0x32, 0x10]);
+
+            assert_eq!(data, cpu.mem_read(old_hl));
+            assert_eq!(cpu.get_hl(), 0x0004);
+        }
+
+        #[test]
+        fn test_la_a_addr_hl_decr_0x3a() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.h = 0x00;
+            cpu.l = 0x05;
+            cpu.set_data_at_hl(data);
+            cpu.load_and_run(vec![0x3A, 0x10]);
+
+            assert_eq!(data, cpu.a);
+            assert_eq!(cpu.get_hl(), 0x0004);
         }
     }
 }
