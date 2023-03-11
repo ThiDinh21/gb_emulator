@@ -308,5 +308,34 @@ mod test {
 
             assert_eq!(cpu.e, data);
         }
+
+        #[test]
+        fn test_la_addr_hl_incr_a_0x22() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.h = 0x00;
+            cpu.l = 0x05;
+            let old_hl = cpu.get_hl();
+            cpu.a = data;
+            cpu.load_and_run(vec![0x22, 0x10]);
+
+            assert_eq!(data, cpu.mem_read(old_hl));
+            assert_eq!(cpu.get_hl(), 0x0006);
+        }
+
+        #[test]
+        fn test_la_a_addr_hl_incr_0x2a() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.h = 0x00;
+            cpu.l = 0x05;
+            cpu.set_data_at_hl(data);
+            cpu.load_and_run(vec![0x2A, 0x10]);
+
+            assert_eq!(data, cpu.a);
+            assert_eq!(cpu.get_hl(), 0x0006);
+        }
     }
 }
