@@ -254,6 +254,38 @@ impl CPU {
                 // LD L,A
                 0x6F => self.l = self.a,
 
+                // LD (HL),B
+                0x70 => self.set_data_at_hl(self.b),
+                // LD (HL),C
+                0x71 => self.set_data_at_hl(self.c),
+                // LD (HL),D
+                0x72 => self.set_data_at_hl(self.d),
+                // LD (HL),E
+                0x73 => self.set_data_at_hl(self.e),
+                // LD (HL),H
+                0x74 => self.set_data_at_hl(self.h),
+                // LD (HL),L
+                0x75 => self.set_data_at_hl(self.l),
+                // LD (HL),A
+                0x77 => self.set_data_at_hl(self.a),
+
+                // LD A,B
+                0x78 => self.a = self.b,
+                // LD A,C
+                0x79 => self.a = self.d,
+                // LD A,D
+                0x7A => self.a = self.d,
+                // LD A,E
+                0x7B => self.a = self.e,
+                // LD A,H
+                0x7C => self.a = self.h,
+                // LD A,L
+                0x7D => self.a = self.l,
+                // LD A,(HL)
+                0x7E => self.a = self.get_data_at_hl(),
+                // LD A,A
+                0x7F => { /* NOP */ }
+
                 //* control/branch *//
                 // STOP
                 0x10 => return,
