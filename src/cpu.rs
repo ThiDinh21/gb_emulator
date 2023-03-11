@@ -567,5 +567,29 @@ mod test {
 
             assert_eq!(data, cpu.a);
         }
+
+        #[test]
+        fn test_ld_addr_ff00_c_a_0xe2() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.c = 0x10;
+            cpu.a = data;
+            cpu.load_and_run(vec![0xE2, 0x10]);
+
+            assert_eq!(data, cpu.mem_read(0xFF10));
+        }
+
+        #[test]
+        fn test_ld_a_addr_ff00_c_0xf2() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.mem_write(0xFF10, data);
+            cpu.c = 0x10;
+            cpu.load_and_run(vec![0xF2, 0x10]);
+
+            assert_eq!(data, cpu.a);
+        }
     }
 }
