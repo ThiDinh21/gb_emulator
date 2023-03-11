@@ -48,7 +48,7 @@ lazy_static! {
         Opcode::new(0x43, "LD B,E", 1, 4),
         Opcode::new(0x44, "LD B,H", 1, 4),
         Opcode::new(0x45, "LD B,L", 1, 4),
-        Opcode::new(0x46, "LD B,(HL)", 1, 4),
+        Opcode::new(0x46, "LD B,(HL)", 1, 8),
         Opcode::new(0x47, "LD B,A", 1, 4),
 
         Opcode::new(0x48, "LD C,B", 1, 4),
@@ -57,7 +57,7 @@ lazy_static! {
         Opcode::new(0x4B, "LD C,E", 1, 4),
         Opcode::new(0x4C, "LD C,H", 1, 4),
         Opcode::new(0x4D, "LD C,L", 1, 4),
-        Opcode::new(0x4E, "LD C,(HL)", 1, 4),
+        Opcode::new(0x4E, "LD C,(HL)", 1, 8),
         Opcode::new(0x4F, "LD C,A", 1, 4),
 
         Opcode::new(0x50, "LD D,B", 1, 4),
@@ -66,7 +66,7 @@ lazy_static! {
         Opcode::new(0x53, "LD D,E", 1, 4),
         Opcode::new(0x54, "LD D,H", 1, 4),
         Opcode::new(0x55, "LD D,L", 1, 4),
-        Opcode::new(0x56, "LD D,(HL)", 1, 4),
+        Opcode::new(0x56, "LD D,(HL)", 1, 8),
         Opcode::new(0x57, "LD D,A", 1, 4),
 
         Opcode::new(0x58, "LD E,B", 1, 4),
@@ -75,8 +75,27 @@ lazy_static! {
         Opcode::new(0x5B, "LD E,E", 1, 4),
         Opcode::new(0x5C, "LD E,H", 1, 4),
         Opcode::new(0x5D, "LD E,L", 1, 4),
-        Opcode::new(0x5E, "LD E,(HL)", 1, 4),
+        Opcode::new(0x5E, "LD E,(HL)", 1, 8),
         Opcode::new(0x5F, "LD E,A", 1, 4),
+
+        Opcode::new(0x60, "LD H,B", 1, 4),
+        Opcode::new(0x61, "LD H,C", 1, 4),
+        Opcode::new(0x62, "LD H,D", 1, 4),
+        Opcode::new(0x63, "LD H,E", 1, 4),
+        Opcode::new(0x64, "LD H,H", 1, 4),
+        Opcode::new(0x65, "LD H,L", 1, 4),
+        Opcode::new(0x66, "LD H,(HL)", 1, 8),
+        Opcode::new(0x67, "LD H,A", 1, 4),
+
+        Opcode::new(0x68, "LD L,B", 1, 4),
+        Opcode::new(0x69, "LD L,C", 1, 4),
+        Opcode::new(0x6A, "LD L,D", 1, 4),
+        Opcode::new(0x6B, "LD L,E", 1, 4),
+        Opcode::new(0x6C, "LD L,H", 1, 4),
+        Opcode::new(0x6D, "LD L,L", 1, 4),
+        Opcode::new(0x6E, "LD L,(HL)", 1, 8),
+        Opcode::new(0x6F, "LD L,A", 1, 4),
+
 
         // Opcode::new(, , , ),
 

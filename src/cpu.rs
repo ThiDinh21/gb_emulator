@@ -220,6 +220,40 @@ impl CPU {
                 // LD E,A
                 0x5F => self.e = self.a,
 
+                // LD H,B
+                0x60 => self.h = self.b,
+                // LD H,C
+                0x61 => self.h = self.c,
+                // LD H,D
+                0x62 => self.h = self.d,
+                // LD H,E
+                0x63 => self.h = self.e,
+                // LD H,H
+                0x64 => { /* NOP */ }
+                // LD H,L
+                0x65 => self.h = self.l,
+                // LD H,(HL)
+                0x66 => self.h = self.get_data_at_hl(),
+                // LD H,A
+                0x67 => self.h = self.a,
+
+                // LD L,B
+                0x68 => self.l = self.b,
+                // LD L,C
+                0x69 => self.l = self.d,
+                // LD L,D
+                0x6A => self.l = self.d,
+                // LD L,E
+                0x6B => self.l = self.e,
+                // LD L,H
+                0x6C => self.l = self.h,
+                // LD L,L
+                0x6D => { /* NOP */ }
+                // LD L,(HL)
+                0x6E => self.l = self.get_data_at_hl(),
+                // LD L,A
+                0x6F => self.l = self.a,
+
                 //* control/branch *//
                 // STOP
                 0x10 => return,
