@@ -286,6 +286,23 @@ impl CPU {
                 // LD A,A
                 0x7F => { /* NOP */ }
 
+                // LD (FF00+u8),A
+                0xE0 => {
+                    let operand = self.mem_read(self.program_counter);
+                    let addr = 0xFF00_u16.wrapping_add(operand as u16);
+                    self.mem_write(addr, self.a);
+                }
+                // LD A,(FF00+u8)
+                0xF0 => {
+                    let operand = self.mem_read(self.program_counter);
+                    let addr = 0xFF00_u16.wrapping_add(operand as u16);
+                    self.a = self.mem_read(addr);
+                }
+                // LD (FF00+C),A
+                // LD A,(FF00+C)
+                // LD (u16),A
+                // LD A,(u16)
+
                 //* control/branch *//
                 // STOP
                 0x10 => return,
@@ -519,6 +536,28 @@ mod test {
 
             assert_eq!(data, cpu.a);
             assert_eq!(cpu.get_hl(), 0x0004);
+        }
+
+        #[test]
+        fn test_ld_addr_ff00_u8_a_0xe0() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.a = data;
+            cpu.load_and_run(vec![0xE0, 0x10, 0x10]);
+
+            assert_eq!(data, cpu.mem_read(0xFF10));
+        }
+
+        #[test]
+        fn test_ld_a_addr_ff00_u8_0xf0() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.mem_write(0xFF10, data);
+            cpu.load_and_run(vec![0xF0, 0x10, 0x10]);
+
+            assert_eq!(data, cpu.a);
         }
     }
 }
