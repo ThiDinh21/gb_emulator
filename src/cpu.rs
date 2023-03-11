@@ -267,7 +267,7 @@ mod test {
         }
 
         #[test]
-        fn test_la_a_addr_bc_0x0a() {
+        fn test_ld_a_addr_bc_0x0a() {
             let mut cpu = CPU::new();
             cpu.b = 0x00;
             cpu.c = 0x05;
@@ -309,7 +309,7 @@ mod test {
         }
 
         #[test]
-        fn test_la_a_addr_de_0x1a() {
+        fn test_ld_a_addr_de_0x1a() {
             let mut cpu = CPU::new();
             cpu.d = 0x00;
             cpu.e = 0x05;
@@ -330,7 +330,7 @@ mod test {
         }
 
         #[test]
-        fn test_la_addr_hl_incr_a_0x22() {
+        fn test_ld_addr_hl_incr_a_0x22() {
             let mut cpu = CPU::new();
             let data = 0x99;
 
@@ -345,7 +345,7 @@ mod test {
         }
 
         #[test]
-        fn test_la_a_addr_hl_incr_0x2a() {
+        fn test_ld_a_addr_hl_incr_0x2a() {
             let mut cpu = CPU::new();
             let data = 0x99;
 
@@ -359,7 +359,7 @@ mod test {
         }
 
         #[test]
-        fn test_la_addr_hl_decr_a_0x32() {
+        fn test_ld_addr_hl_decr_a_0x32() {
             let mut cpu = CPU::new();
             let data = 0x99;
 
@@ -374,7 +374,7 @@ mod test {
         }
 
         #[test]
-        fn test_la_a_addr_hl_decr_0x3a() {
+        fn test_ld_a_addr_hl_decr_0x3a() {
             let mut cpu = CPU::new();
             let data = 0x99;
 
