@@ -152,6 +152,40 @@ impl CPU {
                     self.a = self.mem_read(self.program_counter);
                 }
 
+                // LD B,B
+                0x40 => { /* NO OP */ }
+                // LD B,C
+                0x41 => self.b = self.c,
+                // LD B,D
+                0x42 => self.b = self.d,
+                // LD B,E
+                0x43 => self.b = self.e,
+                // LD B,H
+                0x44 => self.b = self.h,
+                // LD B,L
+                0x45 => self.b = self.l,
+                // LD B,(HL)
+                0x46 => self.b = self.get_data_at_hl(),
+                // LD B,A
+                0x47 => self.b = self.a,
+
+                // LD C,B
+                0x48 => self.c = self.b,
+                // LD C,C
+                0x49 => { /* NO OP */ }
+                // LD C,D
+                0x4A => self.c = self.d,
+                // LD C,E
+                0x4B => self.c = self.e,
+                // LD C,H
+                0x4C => self.c = self.h,
+                // LD C,L
+                0x4D => self.c = self.l,
+                // LD C,(HL)
+                0x4E => self.c = self.get_data_at_hl(),
+                // LD C,A
+                0x4F => self.c = self.a,
+
                 //* control/branch *//
                 // STOP
                 0x10 => return,
