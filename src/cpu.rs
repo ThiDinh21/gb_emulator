@@ -85,35 +85,51 @@ impl CPU {
                 0x02 => self.set_data_at_bc(self.a),
                 // LD B,u8
                 0x06 => {
-                    let data = self.mem_read(self.program_counter);
-                    self.b = data;
+                    self.b = self.mem_read(self.program_counter);
                 }
                 // LD A,(BC)
                 0x0A => {
-                    let data = self.mem_read(self.get_bc());
-                    self.a = data;
+                    self.a = self.mem_read(self.get_bc());
                 }
                 // LD C,u8
                 0x0E => {
-                    let data = self.mem_read(self.program_counter);
-                    self.c = data;
+                    self.c = self.mem_read(self.program_counter);
                 }
+
                 // LD (DE),A
-                0x12 => self.set_data_at_de(self.a),
+                0x12 => {
+                    self.set_data_at_de(self.a);
+                }
                 // LD D,u8
                 0x16 => {
-                    let data = self.mem_read(self.program_counter);
-                    self.d = data;
+                    self.d = self.mem_read(self.program_counter);
                 }
                 // LD A,(DE)
                 0x1A => {
-                    let data = self.mem_read(self.get_de());
-                    self.a = data;
+                    self.a = self.get_data_at_de();
                 }
                 // LD E,u8
                 0x1E => {
-                    let data = self.mem_read(self.program_counter);
-                    self.e = data;
+                    self.e = self.mem_read(self.program_counter);
+                }
+
+                // LD (HL+),A
+                0x22 => {
+                    self.set_data_at_hl(self.a);
+                    self.l = self.l.wrapping_add(1);
+                }
+                // LD H,u8
+                0x26 => {
+                    self.h = self.mem_read(self.program_counter);
+                }
+                // LD A,(HL+)
+                0x2A => {
+                    self.a = self.get_data_at_hl();
+                    self.l = self.l.wrapping_add(1);
+                }
+                // LD L,u8
+                0x2E => {
+                    self.l = self.mem_read(self.program_counter);
                 }
 
                 //* control/branch *//
@@ -176,6 +192,30 @@ impl CPU {
     /// set the data to the addr stored in register DE
     fn set_data_at_de(&mut self, data: u8) {
         self.mem_write(self.get_de(), data);
+    }
+
+    /// get the register HL
+    /// H hi, L lo
+    fn get_hl(&self) -> u16 {
+        u16::from_le_bytes([self.l, self.h])
+    }
+
+    /// set the register HL with data
+    /// H hi, L lo
+    fn set_hl(&mut self, data: u16) {
+        let [lo, hi] = data.to_le_bytes();
+        self.h = hi;
+        self.l = lo;
+    }
+
+    /// get the data at the addr stored in register HL
+    fn get_data_at_hl(&self) -> u8 {
+        self.mem_read(self.get_hl())
+    }
+
+    /// set the data to the addr stored in register HL
+    fn set_data_at_hl(&mut self, data: u8) {
+        self.mem_write(self.get_hl(), data);
     }
 }
 
