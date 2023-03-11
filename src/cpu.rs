@@ -299,7 +299,15 @@ impl CPU {
                     self.a = self.mem_read(addr);
                 }
                 // LD (FF00+C),A
+                0xE2 => {
+                    let addr = 0xFF00_u16 + (self.c as u16);
+                    self.mem_write(addr, self.a);
+                }
                 // LD A,(FF00+C)
+                0xF2 => {
+                    let addr = 0xFF00_u16 + (self.c as u16);
+                    self.a = self.mem_read(addr);
+                }
                 // LD (u16),A
                 // LD A,(u16)
 
