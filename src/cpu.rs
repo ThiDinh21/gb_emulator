@@ -153,7 +153,7 @@ impl CPU {
                 }
 
                 // LD B,B
-                0x40 => { /* NO OP */ }
+                0x40 => { /* NOP */ }
                 // LD B,C
                 0x41 => self.b = self.c,
                 // LD B,D
@@ -172,7 +172,7 @@ impl CPU {
                 // LD C,B
                 0x48 => self.c = self.b,
                 // LD C,C
-                0x49 => { /* NO OP */ }
+                0x49 => { /* NOP */ }
                 // LD C,D
                 0x4A => self.c = self.d,
                 // LD C,E
@@ -185,6 +185,40 @@ impl CPU {
                 0x4E => self.c = self.get_data_at_hl(),
                 // LD C,A
                 0x4F => self.c = self.a,
+
+                // LD D,B
+                0x50 => self.d = self.b,
+                // LD D,C
+                0x51 => self.d = self.c,
+                // LD D,D
+                0x52 => { /* NOP */ }
+                // LD D,E
+                0x53 => self.d = self.e,
+                // LD D,H
+                0x54 => self.d = self.h,
+                // LD D,L
+                0x55 => self.d = self.l,
+                // LD D,(HL)
+                0x56 => self.d = self.get_data_at_hl(),
+                // LD D,A
+                0x57 => self.d = self.a,
+
+                // LD E,B
+                0x58 => self.e = self.b,
+                // LD E,C
+                0x59 => self.e = self.d,
+                // LD E,D
+                0x5A => self.e = self.d,
+                // LD E,E
+                0x5B => { /* NOP */ }
+                // LD E,H
+                0x5C => self.e = self.h,
+                // LD E,L
+                0x5D => self.e = self.l,
+                // LD E,(HL)
+                0x5E => self.e = self.get_data_at_hl(),
+                // LD E,A
+                0x5F => self.e = self.a,
 
                 //* control/branch *//
                 // STOP

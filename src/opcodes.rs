@@ -60,6 +60,23 @@ lazy_static! {
         Opcode::new(0x4E, "LD C,(HL)", 1, 4),
         Opcode::new(0x4F, "LD C,A", 1, 4),
 
+        Opcode::new(0x50, "LD D,B", 1, 4),
+        Opcode::new(0x51, "LD D,C", 1, 4),
+        Opcode::new(0x52, "LD D,D", 1, 4),
+        Opcode::new(0x53, "LD D,E", 1, 4),
+        Opcode::new(0x54, "LD D,H", 1, 4),
+        Opcode::new(0x55, "LD D,L", 1, 4),
+        Opcode::new(0x56, "LD D,(HL)", 1, 4),
+        Opcode::new(0x57, "LD D,A", 1, 4),
+
+        Opcode::new(0x58, "LD E,B", 1, 4),
+        Opcode::new(0x59, "LD E,C", 1, 4),
+        Opcode::new(0x5A, "LD E,D", 1, 4),
+        Opcode::new(0x5B, "LD E,E", 1, 4),
+        Opcode::new(0x5C, "LD E,H", 1, 4),
+        Opcode::new(0x5D, "LD E,L", 1, 4),
+        Opcode::new(0x5E, "LD E,(HL)", 1, 4),
+        Opcode::new(0x5F, "LD E,A", 1, 4),
 
         // Opcode::new(, , , ),
 
