@@ -125,6 +125,7 @@ lazy_static! {
         // control/branch
         Opcode::new(0x00, "NOP", 1, 4),
         Opcode::new(0x10, "STOP", 1, 4),
+        Opcode::new(0x76, "HALT", 1, 4),  // TODO!: implement HALT
         // Opcode::new(, , , ),
     ];
     pub static ref OPCODES_MAP: HashMap<u8, &'static Opcode> = {

@@ -324,6 +324,8 @@ impl CPU {
                 0x00 => { /* NOP */ }
                 // STOP
                 0x10 => return,
+                // HALT
+                0x76 => todo!("Impl HALT!"),
                 _ => todo!(""),
             }
 
