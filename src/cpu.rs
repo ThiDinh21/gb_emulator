@@ -309,7 +309,15 @@ impl CPU {
                     self.a = self.mem_read(addr);
                 }
                 // LD (u16),A
+                0xEA => {
+                    let addr = self.mem_read_u16(self.program_counter);
+                    self.mem_write(addr, self.a);
+                }
                 // LD A,(u16)
+                0xFA => {
+                    let addr = self.mem_read_u16(self.program_counter);
+                    self.a = self.mem_read(addr);
+                }
 
                 //* control/branch *//
                 // STOP
@@ -588,6 +596,28 @@ mod test {
             cpu.mem_write(0xFF10, data);
             cpu.c = 0x10;
             cpu.load_and_run(vec![0xF2, 0x10]);
+
+            assert_eq!(data, cpu.a);
+        }
+
+        #[test]
+        fn test_ld_addr_u16_a_0xea() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.a = data;
+            cpu.load_and_run(vec![0xEA, 0x79, 0xAA, 0x10]);
+
+            assert_eq!(data, cpu.mem_read(0xAA79));
+        }
+
+        #[test]
+        fn test_ld_a_addr_u16_0xfa() {
+            let mut cpu = CPU::new();
+            let data = 0x99;
+
+            cpu.mem_write(0xAA79, data);
+            cpu.load_and_run(vec![0xFA, 0x79, 0xAA, 0x10]);
 
             assert_eq!(data, cpu.a);
         }
