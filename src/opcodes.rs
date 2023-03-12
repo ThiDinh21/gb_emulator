@@ -123,6 +123,7 @@ lazy_static! {
         Opcode::new(0xFA, "LD A,(u16)", 3, 16),
 
         // control/branch
+        Opcode::new(0x00, "NOP", 1, 4),
         Opcode::new(0x10, "STOP", 1, 4),
         // Opcode::new(, , , ),
     ];

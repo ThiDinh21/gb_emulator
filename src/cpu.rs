@@ -320,6 +320,8 @@ impl CPU {
                 }
 
                 //* control/branch *//
+                // NOP
+                0x00 => { /* NOP */ }
                 // STOP
                 0x10 => return,
                 _ => todo!(""),
