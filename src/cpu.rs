@@ -1,4 +1,27 @@
 use crate::opcodes::OPCODES_MAP;
+use bitflags::bitflags;
+
+bitflags! {
+    /// https://gbdev.io/pandocs/CPU_Registers_and_Flags.html
+    ///
+    /// 7     bit     0
+    /// ----       ----
+    /// Z N H CY 0 0 0 0
+    /// | | | |  | | | |
+    /// | | | |  | | | |
+    /// | | | |  | | | |
+    /// | | | |  +-+-+-+- Always 0
+    /// | | | +--------- Carry flag
+    /// | | + ---------- Half Carry flag (BCD)
+    /// | +------------- Substraction flag (BCD)
+    /// +--------------- Zero flag
+    pub struct StatusFlags: u8 {
+        const ZERO = 0b1000_0000;
+        const SUBSTRACTION = 0b0100_0000;
+        const HALF_CARRY = 0b0010_0000;
+        const CARRY = 0b0001_0000;
+    }
+}
 
 trait Mem {
     fn mem_read(&self, addr: u16) -> u8;
@@ -20,7 +43,7 @@ trait Mem {
 pub struct CPU {
     pub program_counter: u16,
     pub stack_pointer: u16,
-    pub status: u8,
+    pub status: StatusFlags,
     pub a: u8,
     pub b: u8,
     pub c: u8,
@@ -51,7 +74,7 @@ impl CPU {
             e: 0,
             h: 0,
             l: 0,
-            status: 0,
+            status: StatusFlags::from_bits_truncate(0x00),
             program_counter: 0,
             stack_pointer: 0,
             memory: [0; 0xFFFF],
