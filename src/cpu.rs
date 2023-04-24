@@ -359,43 +359,43 @@ impl CPU {
     }
 
     //* Getters and Setters *//
-    fn get_a(&self) -> u8 {
+    pub fn get_a(&self) -> u8 {
         self.a
     }
 
-    fn get_b(&self) -> u8 {
+    pub fn get_b(&self) -> u8 {
         self.a
     }
 
-    fn get_c(&self) -> u8 {
+    pub fn get_c(&self) -> u8 {
         self.a
     }
 
-    fn get_d(&self) -> u8 {
+    pub fn get_d(&self) -> u8 {
         self.a
     }
 
-    fn get_e(&self) -> u8 {
+    pub fn get_e(&self) -> u8 {
         self.a
     }
 
-    fn get_h(&self) -> u8 {
+    pub fn get_h(&self) -> u8 {
         self.a
     }
 
-    fn get_l(&self) -> u8 {
+    pub fn get_l(&self) -> u8 {
         self.a
     }
 
     /// get the register BC
     /// B hi, C lo
-    fn get_bc(&self) -> u16 {
+    pub fn get_bc(&self) -> u16 {
         u16::from_le_bytes([self.c, self.b])
     }
 
     /// set the register BC with data
     /// B hi, C lo
-    fn set_bc(&mut self, data: u16) {
+    pub fn set_bc(&mut self, data: u16) {
         let [lo, hi] = data.to_le_bytes();
         self.b = hi;
         self.c = lo;
@@ -403,13 +403,13 @@ impl CPU {
 
     /// get the register DE
     /// D hi, E lo
-    fn get_de(&self) -> u16 {
+    pub fn get_de(&self) -> u16 {
         u16::from_le_bytes([self.e, self.d])
     }
 
     /// set the register DE with data
     /// D hi, E lo
-    fn set_de(&mut self, data: u16) {
+    pub fn set_de(&mut self, data: u16) {
         let [lo, hi] = data.to_le_bytes();
         self.d = hi;
         self.e = lo;
@@ -417,39 +417,39 @@ impl CPU {
 
     /// get the register HL
     /// H hi, L lo
-    fn get_hl(&self) -> u16 {
+    pub fn get_hl(&self) -> u16 {
         u16::from_le_bytes([self.l, self.h])
     }
 
     /// set the register HL with data
     /// H hi, L lo
-    fn set_hl(&mut self, data: u16) {
+    pub fn set_hl(&mut self, data: u16) {
         let [lo, hi] = data.to_le_bytes();
         self.h = hi;
         self.l = lo;
     }
 
-    fn get_zf(&self) -> bool {
+    pub fn get_zf(&self) -> bool {
         self.status.contains(StatusFlags::Z)
     }
 
-    fn get_nf(&self) -> bool {
+    pub fn get_nf(&self) -> bool {
         self.status.contains(StatusFlags::N)
     }
 
-    fn get_hf(&self) -> bool {
+    pub fn get_hf(&self) -> bool {
         self.status.contains(StatusFlags::H)
     }
 
-    fn get_cf(&self) -> bool {
+    pub fn get_cf(&self) -> bool {
         self.status.contains(StatusFlags::C)
     }
 
-    fn get_sp(&self) -> u16 {
+    pub fn get_sp(&self) -> u16 {
         self.stack_pointer
     }
 
-    fn set_sp(&mut self, v: u16) {
+    pub fn set_sp(&mut self, v: u16) {
         self.stack_pointer = v;
     }
 
