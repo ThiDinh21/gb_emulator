@@ -6,7 +6,7 @@ bitflags! {
     ///
     /// 7     bit     0
     /// ----       ----
-    /// Z N H CY 0 0 0 0
+    /// Z N H CF 0 0 0 0
     /// | | | |  | | | |
     /// | | | |  | | | |
     /// | | | |  | | | |
@@ -16,10 +16,10 @@ bitflags! {
     /// | +------------- Substraction flag (BCD)
     /// +--------------- Zero flag
     pub struct StatusFlags: u8 {
-        const ZERO = 0b1000_0000;
-        const SUBSTRACTION = 0b0100_0000;
-        const HALF_CARRY = 0b0010_0000;
-        const CARRY = 0b0001_0000;
+        const Z = 0b1000_0000;
+        const N = 0b0100_0000;
+        const H = 0b0010_0000;
+        const C = 0b0001_0000;
     }
 }
 
