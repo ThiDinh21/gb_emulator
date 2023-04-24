@@ -507,6 +507,10 @@ impl CPU {
     fn set_data_at_hl(&mut self, data: u8) {
         self.mem_write(self.get_hl(), data);
     }
+
+    fn cpu_jr(&mut self) {
+        todo!();
+    }
 }
 
 mod test {
