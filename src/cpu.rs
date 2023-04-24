@@ -358,7 +358,34 @@ impl CPU {
         }
     }
 
-    //* Register related methods *//
+    //* Getters and Setters *//
+    fn get_a(&self) -> u8 {
+        self.a
+    }
+
+    fn get_b(&self) -> u8 {
+        self.a
+    }
+
+    fn get_c(&self) -> u8 {
+        self.a
+    }
+
+    fn get_d(&self) -> u8 {
+        self.a
+    }
+
+    fn get_e(&self) -> u8 {
+        self.a
+    }
+
+    fn get_h(&self) -> u8 {
+        self.a
+    }
+
+    fn get_l(&self) -> u8 {
+        self.a
+    }
 
     /// get the register BC
     /// B hi, C lo
@@ -372,16 +399,6 @@ impl CPU {
         let [lo, hi] = data.to_le_bytes();
         self.b = hi;
         self.c = lo;
-    }
-
-    /// get the data at the addr stored in register BC
-    fn get_data_at_bc(&self) -> u8 {
-        self.mem_read(self.get_bc())
-    }
-
-    /// set the data to the addr stored in register BC
-    fn set_data_at_bc(&mut self, data: u8) {
-        self.mem_write(self.get_bc(), data);
     }
 
     /// get the register DE
@@ -398,16 +415,6 @@ impl CPU {
         self.e = lo;
     }
 
-    /// get the data at the addr stored in register DE
-    fn get_data_at_de(&self) -> u8 {
-        self.mem_read(self.get_de())
-    }
-
-    /// set the data to the addr stored in register DE
-    fn set_data_at_de(&mut self, data: u8) {
-        self.mem_write(self.get_de(), data);
-    }
-
     /// get the register HL
     /// H hi, L lo
     fn get_hl(&self) -> u16 {
@@ -420,6 +427,52 @@ impl CPU {
         let [lo, hi] = data.to_le_bytes();
         self.h = hi;
         self.l = lo;
+    }
+
+    fn get_zf(&self) -> bool {
+        self.status.contains(StatusFlags::Z)
+    }
+
+    fn get_nf(&self) -> bool {
+        self.status.contains(StatusFlags::N)
+    }
+
+    fn get_hf(&self) -> bool {
+        self.status.contains(StatusFlags::H)
+    }
+
+    fn get_cf(&self) -> bool {
+        self.status.contains(StatusFlags::C)
+    }
+
+    fn get_sp(&self) -> u16 {
+        self.stack_pointer
+    }
+
+    fn set_sp(&mut self, v: u16) {
+        self.stack_pointer = v;
+    }
+
+    //* Register related methods *//
+
+    /// get the data at the addr stored in register BC
+    fn get_data_at_bc(&self) -> u8 {
+        self.mem_read(self.get_bc())
+    }
+
+    /// set the data to the addr stored in register BC
+    fn set_data_at_bc(&mut self, data: u8) {
+        self.mem_write(self.get_bc(), data);
+    }
+
+    /// get the data at the addr stored in register DE
+    fn get_data_at_de(&self) -> u8 {
+        self.mem_read(self.get_de())
+    }
+
+    /// set the data to the addr stored in register DE
+    fn set_data_at_de(&mut self, data: u8) {
+        self.mem_write(self.get_de(), data);
     }
 
     /// get the data at the addr stored in register HL
