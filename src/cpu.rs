@@ -393,40 +393,16 @@ impl CPU {
         u16::from_le_bytes([self.c, self.b])
     }
 
-    /// set the register BC with data
-    /// B hi, C lo
-    pub fn set_bc(&mut self, data: u16) {
-        let [lo, hi] = data.to_le_bytes();
-        self.b = hi;
-        self.c = lo;
-    }
-
     /// get the register DE
     /// D hi, E lo
     pub fn get_de(&self) -> u16 {
         u16::from_le_bytes([self.e, self.d])
     }
 
-    /// set the register DE with data
-    /// D hi, E lo
-    pub fn set_de(&mut self, data: u16) {
-        let [lo, hi] = data.to_le_bytes();
-        self.d = hi;
-        self.e = lo;
-    }
-
     /// get the register HL
     /// H hi, L lo
     pub fn get_hl(&self) -> u16 {
         u16::from_le_bytes([self.l, self.h])
-    }
-
-    /// set the register HL with data
-    /// H hi, L lo
-    pub fn set_hl(&mut self, data: u16) {
-        let [lo, hi] = data.to_le_bytes();
-        self.h = hi;
-        self.l = lo;
     }
 
     pub fn get_zf(&self) -> bool {
@@ -447,6 +423,53 @@ impl CPU {
 
     pub fn get_sp(&self) -> u16 {
         self.stack_pointer
+    }
+
+    pub fn set_a(&mut self, v: u8) {
+        self.a = v;
+    }
+
+    pub fn set_b(&mut self, v: u8) {
+        self.b = v;
+    }
+    pub fn set_c(&mut self, v: u8) {
+        self.c = v;
+    }
+    pub fn set_d(&mut self, v: u8) {
+        self.d = v;
+    }
+    pub fn set_e(&mut self, v: u8) {
+        self.e = v;
+    }
+    pub fn set_h(&mut self, v: u8) {
+        self.h = v;
+    }
+    pub fn set_l(&mut self, v: u8) {
+        self.l = v;
+    }
+
+    /// set the register BC with data
+    /// B hi, C lo
+    pub fn set_bc(&mut self, data: u16) {
+        let [lo, hi] = data.to_le_bytes();
+        self.b = hi;
+        self.c = lo;
+    }
+
+    /// set the register DE with data
+    /// D hi, E lo
+    pub fn set_de(&mut self, data: u16) {
+        let [lo, hi] = data.to_le_bytes();
+        self.d = hi;
+        self.e = lo;
+    }
+
+    /// set the register HL with data
+    /// H hi, L lo
+    pub fn set_hl(&mut self, data: u16) {
+        let [lo, hi] = data.to_le_bytes();
+        self.h = hi;
+        self.l = lo;
     }
 
     pub fn set_sp(&mut self, v: u16) {
