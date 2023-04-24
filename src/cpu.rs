@@ -23,20 +23,20 @@ bitflags! {
     }
 }
 
-trait Mem {
-    fn mem_read(&self, addr: u16) -> u8;
-    fn mem_write(&mut self, addr: u16, data: u8);
+pub trait Mem {
+    fn mem_read_u8(&self, addr: u16) -> u8;
+    fn mem_write_u8(&mut self, addr: u16, data: u8);
 
     fn mem_read_u16(&self, addr: u16) -> u16 {
-        let lo = self.mem_read(addr);
-        let hi = self.mem_read(addr.wrapping_add(1));
+        let lo = self.mem_read_u8(addr);
+        let hi = self.mem_read_u8(addr.wrapping_add(1));
         u16::from_le_bytes([lo, hi])
     }
 
     fn mem_write_u16(&mut self, addr: u16, data: u16) {
         let [lo, hi] = data.to_le_bytes();
-        self.mem_write(addr, lo);
-        self.mem_write(addr.wrapping_add(1), hi);
+        self.mem_write_u8(addr, lo);
+        self.mem_write_u8(addr.wrapping_add(1), hi);
     }
 }
 
@@ -55,11 +55,11 @@ pub struct CPU {
 }
 
 impl Mem for CPU {
-    fn mem_read(&self, addr: u16) -> u8 {
+    fn mem_read_u8(&self, addr: u16) -> u8 {
         self.memory[addr as usize]
     }
 
-    fn mem_write(&mut self, addr: u16, data: u8) {
+    fn mem_write_u8(&mut self, addr: u16, data: u8) {
         self.memory[addr as usize] = data;
     }
 }
@@ -84,7 +84,7 @@ impl CPU {
     pub fn load_and_run(&mut self, program: Vec<u8>) {
         for i in 0..(program.len() as u16) {
             // TODO: implement MBC
-            self.mem_write(i, program[i as usize]);
+            self.mem_write_u8(i, program[i as usize]);
         }
 
         self.run();
@@ -94,7 +94,7 @@ impl CPU {
         let ref all_opcodes = *OPCODES_MAP;
 
         loop {
-            let code = &self.mem_read(self.program_counter);
+            let code = &self.mem_read_u8(self.program_counter);
             self.program_counter += 1;
             let pc_state = self.program_counter;
 
@@ -108,15 +108,15 @@ impl CPU {
                 0x02 => self.set_data_at_bc(self.a),
                 // LD B,u8
                 0x06 => {
-                    self.b = self.mem_read(self.program_counter);
+                    self.b = self.mem_read_u8(self.program_counter);
                 }
                 // LD A,(BC)
                 0x0A => {
-                    self.a = self.mem_read(self.get_bc());
+                    self.a = self.mem_read_u8(self.get_bc());
                 }
                 // LD C,u8
                 0x0E => {
-                    self.c = self.mem_read(self.program_counter);
+                    self.c = self.mem_read_u8(self.program_counter);
                 }
 
                 // LD (DE),A
@@ -125,7 +125,7 @@ impl CPU {
                 }
                 // LD D,u8
                 0x16 => {
-                    self.d = self.mem_read(self.program_counter);
+                    self.d = self.mem_read_u8(self.program_counter);
                 }
                 // LD A,(DE)
                 0x1A => {
@@ -133,7 +133,7 @@ impl CPU {
                 }
                 // LD E,u8
                 0x1E => {
-                    self.e = self.mem_read(self.program_counter);
+                    self.e = self.mem_read_u8(self.program_counter);
                 }
 
                 // LD (HL+),A
@@ -143,7 +143,7 @@ impl CPU {
                 }
                 // LD H,u8
                 0x26 => {
-                    self.h = self.mem_read(self.program_counter);
+                    self.h = self.mem_read_u8(self.program_counter);
                 }
                 // LD A,(HL+)
                 0x2A => {
@@ -152,7 +152,7 @@ impl CPU {
                 }
                 // LD L,u8
                 0x2E => {
-                    self.l = self.mem_read(self.program_counter);
+                    self.l = self.mem_read_u8(self.program_counter);
                 }
 
                 // LD (HL-),A
@@ -162,7 +162,7 @@ impl CPU {
                 }
                 // LD (HL),u8
                 0x36 => {
-                    let data = self.mem_read(self.program_counter);
+                    let data = self.mem_read_u8(self.program_counter);
                     self.set_data_at_hl(data);
                 }
                 // LD A,(HL-)
@@ -172,7 +172,7 @@ impl CPU {
                 }
                 // LD A,u8
                 0x3E => {
-                    self.a = self.mem_read(self.program_counter);
+                    self.a = self.mem_read_u8(self.program_counter);
                 }
 
                 // LD B,B
@@ -311,35 +311,35 @@ impl CPU {
 
                 // LD (FF00+u8),A
                 0xE0 => {
-                    let operand = self.mem_read(self.program_counter);
+                    let operand = self.mem_read_u8(self.program_counter);
                     let addr = 0xFF00_u16.wrapping_add(operand as u16);
-                    self.mem_write(addr, self.a);
+                    self.mem_write_u8(addr, self.a);
                 }
                 // LD A,(FF00+u8)
                 0xF0 => {
-                    let operand = self.mem_read(self.program_counter);
+                    let operand = self.mem_read_u8(self.program_counter);
                     let addr = 0xFF00_u16.wrapping_add(operand as u16);
-                    self.a = self.mem_read(addr);
+                    self.a = self.mem_read_u8(addr);
                 }
                 // LD (FF00+C),A
                 0xE2 => {
                     let addr = 0xFF00_u16 + (self.c as u16);
-                    self.mem_write(addr, self.a);
+                    self.mem_write_u8(addr, self.a);
                 }
                 // LD A,(FF00+C)
                 0xF2 => {
                     let addr = 0xFF00_u16 + (self.c as u16);
-                    self.a = self.mem_read(addr);
+                    self.a = self.mem_read_u8(addr);
                 }
                 // LD (u16),A
                 0xEA => {
                     let addr = self.mem_read_u16(self.program_counter);
-                    self.mem_write(addr, self.a);
+                    self.mem_write_u8(addr, self.a);
                 }
                 // LD A,(u16)
                 0xFA => {
                     let addr = self.mem_read_u16(self.program_counter);
-                    self.a = self.mem_read(addr);
+                    self.a = self.mem_read_u8(addr);
                 }
 
                 //* control/branch *//
@@ -480,32 +480,32 @@ impl CPU {
 
     /// get the data at the addr stored in register BC
     fn get_data_at_bc(&self) -> u8 {
-        self.mem_read(self.get_bc())
+        self.mem_read_u8(self.get_bc())
     }
 
     /// set the data to the addr stored in register BC
     fn set_data_at_bc(&mut self, data: u8) {
-        self.mem_write(self.get_bc(), data);
+        self.mem_write_u8(self.get_bc(), data);
     }
 
     /// get the data at the addr stored in register DE
     fn get_data_at_de(&self) -> u8 {
-        self.mem_read(self.get_de())
+        self.mem_read_u8(self.get_de())
     }
 
     /// set the data to the addr stored in register DE
     fn set_data_at_de(&mut self, data: u8) {
-        self.mem_write(self.get_de(), data);
+        self.mem_write_u8(self.get_de(), data);
     }
 
     /// get the data at the addr stored in register HL
     fn get_data_at_hl(&self) -> u8 {
-        self.mem_read(self.get_hl())
+        self.mem_read_u8(self.get_hl())
     }
 
     /// set the data to the addr stored in register HL
     fn set_data_at_hl(&mut self, data: u8) {
-        self.mem_write(self.get_hl(), data);
+        self.mem_write_u8(self.get_hl(), data);
     }
 
     fn cpu_jr(&mut self) {
@@ -614,7 +614,7 @@ mod test {
             cpu.a = data;
             cpu.load_and_run(vec![0x22, 0x10]);
 
-            assert_eq!(data, cpu.mem_read(old_hl));
+            assert_eq!(data, cpu.mem_read_u8(old_hl));
             assert_eq!(cpu.get_hl(), 0x0006);
         }
 
@@ -643,7 +643,7 @@ mod test {
             cpu.a = data;
             cpu.load_and_run(vec![0x32, 0x10]);
 
-            assert_eq!(data, cpu.mem_read(old_hl));
+            assert_eq!(data, cpu.mem_read_u8(old_hl));
             assert_eq!(cpu.get_hl(), 0x0004);
         }
 
@@ -669,7 +669,7 @@ mod test {
             cpu.a = data;
             cpu.load_and_run(vec![0xE0, 0x10, 0x10]);
 
-            assert_eq!(data, cpu.mem_read(0xFF10));
+            assert_eq!(data, cpu.mem_read_u8(0xFF10));
         }
 
         #[test]
@@ -677,7 +677,7 @@ mod test {
             let mut cpu = CPU::new();
             let data = 0x99;
 
-            cpu.mem_write(0xFF10, data);
+            cpu.mem_write_u8(0xFF10, data);
             cpu.load_and_run(vec![0xF0, 0x10, 0x10]);
 
             assert_eq!(data, cpu.a);
@@ -692,7 +692,7 @@ mod test {
             cpu.a = data;
             cpu.load_and_run(vec![0xE2, 0x10]);
 
-            assert_eq!(data, cpu.mem_read(0xFF10));
+            assert_eq!(data, cpu.mem_read_u8(0xFF10));
         }
 
         #[test]
@@ -700,7 +700,7 @@ mod test {
             let mut cpu = CPU::new();
             let data = 0x99;
 
-            cpu.mem_write(0xFF10, data);
+            cpu.mem_write_u8(0xFF10, data);
             cpu.c = 0x10;
             cpu.load_and_run(vec![0xF2, 0x10]);
 
@@ -715,7 +715,7 @@ mod test {
             cpu.a = data;
             cpu.load_and_run(vec![0xEA, 0x79, 0xAA, 0x10]);
 
-            assert_eq!(data, cpu.mem_read(0xAA79));
+            assert_eq!(data, cpu.mem_read_u8(0xAA79));
         }
 
         #[test]
@@ -723,7 +723,7 @@ mod test {
             let mut cpu = CPU::new();
             let data = 0x99;
 
-            cpu.mem_write(0xAA79, data);
+            cpu.mem_write_u8(0xAA79, data);
             cpu.load_and_run(vec![0xFA, 0x79, 0xAA, 0x10]);
 
             assert_eq!(data, cpu.a);
