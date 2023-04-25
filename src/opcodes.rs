@@ -6757,7 +6757,9 @@ impl CPU {
     }
 
     /// decode the opcode and return the cycle
-    fn decode(&mut self, opcode: Opcode, op_size: u8) -> u8 {
+    pub fn decode(&mut self, opcode: &Opcode) -> u8 {
+        let op_size = opcode.bytes;
+
         match opcode.code {
             0x0000 => self.op_0000(op_size),
             0x0001 => self.op_0001(op_size),

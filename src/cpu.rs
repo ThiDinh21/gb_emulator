@@ -94,18 +94,30 @@ impl CPU {
         let ref all_opcodes = *CPU_OPCODES;
 
         loop {
-            let code = &self.mem_read_u8(self.program_counter);
+            let code = self.fetch_opcode();
+
             self.program_counter += 1;
             let pc_state = self.program_counter;
 
-            todo!();
-            // let opcode = all_opcodes
-            //     .get(code)
-            //     .expect(&format!("Opcode {:x} is not recognized", code));
+            let opcode = all_opcodes
+                .get(&code)
+                .expect(&format!("Opcode {:x} is not recognized", code));
 
-            // if self.program_counter == pc_state {
-            //     self.program_counter += opcode.bytes as u16 - 1;
-            // }
+            let time = self.decode(opcode);
+
+            if self.program_counter == pc_state {
+                self.program_counter += opcode.bytes as u16 - 1;
+            }
+        }
+    }
+
+    pub fn fetch_opcode(&mut self) -> u16 {
+        let op = self.mem_read_u8(self.program_counter);
+
+        if op != 0xCB {
+            op as u16
+        } else {
+            0xCB_u16 << 8 | op as u16
         }
     }
 
