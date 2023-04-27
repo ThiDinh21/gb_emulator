@@ -10,7 +10,7 @@ pub struct MMU {
     oam: [u8; 0xA0],
     io_regs: [u8; 0x80],
     hram: [u8; 0x7F],
-    ie: bool,
+    interrupt_enable: u8,
 }
 
 impl Mem for MMU {
@@ -23,7 +23,7 @@ impl Mem for MMU {
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00..=0xFF7F => todo!(),
             0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize],
-            0xFFFF => todo!(),
+            0xFFFF => self.interrupt_enable,
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
                 panic!("Attempt to access prohibited memory region")
             }
@@ -39,7 +39,7 @@ impl Mem for MMU {
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00..=0xFF7F => todo!(),
             0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize] = data,
-            0xFFFF => todo!(),
+            0xFFFF => self.interrupt_enable = data,
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
                 panic!("Attempt to access prohibited memory region");
             }
