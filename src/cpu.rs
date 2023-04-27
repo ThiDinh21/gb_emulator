@@ -1,6 +1,9 @@
 use crate::opcodes::CPU_OPCODES;
 use bitflags::bitflags;
 
+const STACK_BOTTOM: u16 = 0x0100;
+const STACK_PTR_RESET: u8 = 0xFD;
+
 bitflags! {
     /// https://gbdev.io/pandocs/CPU_Registers_and_Flags.html
     ///
@@ -301,11 +304,26 @@ impl CPU {
 
     //* Stack methods *//
     pub fn stack_push(&mut self, data: u16) {
-        todo!();
+        self.stack_pointer -= 2;
+        self.validate_sp();
+        self.mem_write_u16(self.stack_pointer, data);
     }
 
     pub fn stack_pop(&mut self) -> u16 {
-        todo!()
+        let res = self.mem_read_u16(self.stack_pointer);
+
+        self.stack_pointer += 2;
+        self.validate_sp();
+
+        res
+    }
+
+    fn validate_sp(&self) {
+        if self.get_sp() > 0xFFFE {
+            panic!("Stack underflow");
+        } else if self.get_sp() < 0xFF80 {
+            panic!("Stack overflow");
+        }
     }
 }
 
