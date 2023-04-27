@@ -22,9 +22,7 @@ impl Mem for MMU {
             0xC000..=0xDFFF => todo!("Work RAM"),
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00..=0xFF7F => todo!(),
-            0xFF80..=0xFFFE => {
-                todo!("HRAM")
-            }
+            0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize],
             0xFFFF => todo!(),
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
                 panic!("Attempt to access prohibited memory region")
@@ -34,13 +32,13 @@ impl Mem for MMU {
 
     fn mem_write_u8(&mut self, addr: u16, data: u8) {
         match addr {
-            0x0000..=0x7FFF => self.memory[addr as usize],
+            0x0000..=0x7FFF => self.memory[addr as usize] = data,
             0x8000..=0x9FFF => todo!("VRAM"),
             0xA000..=0xBFFF => todo!("Extra RAM"),
             0xC000..=0xDFFF => todo!("Work RAM"),
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00..=0xFF7F => todo!(),
-            0xFF80..=0xFFFE => todo!("HRAM"),
+            0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize] = data,
             0xFFFF => todo!(),
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
                 panic!("Attempt to access prohibited memory region");
