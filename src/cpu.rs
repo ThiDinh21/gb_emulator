@@ -250,7 +250,7 @@ impl CPU {
         self.stack_pointer = v;
     }
 
-    //* Register related methods *//
+    //* Register related methods for testing *//
 
     /// get the data at the addr stored in register BC
     fn get_data_at_bc(&self) -> u8 {
@@ -281,6 +281,8 @@ impl CPU {
     fn set_data_at_hl(&mut self, data: u8) {
         self.mem_write_u8(self.get_hl(), data);
     }
+
+    //* Other CPU functions *//
 
     pub fn enable_interrupt(&mut self) {
         todo!();
