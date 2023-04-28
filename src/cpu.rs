@@ -1,4 +1,4 @@
-use crate::opcodes::CPU_OPCODES;
+use crate::{mmu::MMU, opcodes::CPU_OPCODES};
 use bitflags::bitflags;
 
 const STACK_BOTTOM: u16 = 0x0100;
@@ -54,16 +54,16 @@ pub struct CPU {
     pub e: u8,
     pub h: u8,
     pub l: u8,
-    pub memory: [u8; 0xFFFF],
+    pub mmu: MMU,
 }
 
 impl Mem for CPU {
     fn mem_read_u8(&self, addr: u16) -> u8 {
-        self.memory[addr as usize]
+        self.mmu.mem_read_u8(addr)
     }
 
     fn mem_write_u8(&mut self, addr: u16, data: u8) {
-        self.memory[addr as usize] = data;
+        self.mmu.mem_write_u8(addr, data);
     }
 }
 
@@ -80,7 +80,7 @@ impl CPU {
             status: StatusFlags::from_bits_truncate(0x00),
             program_counter: 0,
             stack_pointer: 0,
-            memory: [0; 0xFFFF],
+            mmu: MMU::new(),
         }
     }
 

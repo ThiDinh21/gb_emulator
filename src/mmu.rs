@@ -59,3 +59,24 @@ impl Mem for MMU {
         };
     }
 }
+
+impl MMU {
+    pub fn new() -> Self {
+        let mut mmu = MMU {
+            memory: [0; 0x8000],
+            vram: [0; 0x2000],
+            ex_ram: [0; 0x2000],
+            wram: [0; 0x2000],
+            oam: [0; 0xA0],
+            io_regs: [0; 0x80],
+            hram: [0; 0x7F],
+            interrupt_enable: 0,
+        };
+        // mmu.initiate();
+        mmu
+    }
+
+    fn initiate(&mut self) {
+        todo!()
+    }
+}
