@@ -8,8 +8,7 @@ const NINTENDO_LOGO: [u8; 48] = [
 /// https://gbdev.io/pandocs/The_Cartridge_Header.html
 pub struct Cartridge {
     pub entry_point: [u8; 4],
-    pub title: [u8; 15], // ignore manufacturer code
-    pub cgb_flg: u8,
+    pub title: [u8; 16], // ignore manufacturer code
     pub sgb_flg: u8,
     pub rom_type: u8, // https://gbdev.io/pandocs/The_Cartridge_Header.html#0147--cartridge-type
     pub rom_size: u8,
@@ -25,7 +24,7 @@ impl Cartridge {
         let entry_point: [u8; 4] = raw[0x0100..=0x0103]
             .try_into()
             .expect("Slice with incorrect length");
-        let title: [u8; 15] = raw[0x0134..=0x0142]
+        let title: [u8; 16] = raw[0x0134..=0x0143]
             .try_into()
             .expect("Slice with incorrect length");
 
@@ -36,7 +35,6 @@ impl Cartridge {
         Ok(Cartridge {
             entry_point,
             title,
-            cgb_flg: raw[0x0143],
             sgb_flg: raw[0x0146],
             rom_type: raw[0x0147],
             rom_size: raw[0x0148],

@@ -1,9 +1,6 @@
 use crate::{mmu::MMU, opcodes::CPU_OPCODES};
 use bitflags::bitflags;
 
-const STACK_BOTTOM: u16 = 0x0100;
-const STACK_PTR_RESET: u8 = 0xFD;
-
 bitflags! {
     /// https://gbdev.io/pandocs/CPU_Registers_and_Flags.html
     ///
