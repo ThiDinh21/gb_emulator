@@ -1,4 +1,4 @@
-use crate::cpu::Mem;
+use crate::{cartridge::Cartridge, cpu::Mem};
 
 const VRAM: u16 = 0x8000;
 const VRAM_END: u16 = 0x9FFF;
@@ -61,9 +61,13 @@ impl Mem for MMU {
 }
 
 impl MMU {
-    pub fn new() -> Self {
+    pub fn new(rom: Cartridge) -> Self {
+        let memory: [u8; 0x8000] = (*rom.prg_rom.into_boxed_slice())
+            .try_into()
+            .expect("ROM has wrong size");
+
         let mut mmu = MMU {
-            memory: [0; 0x8000],
+            memory,
             vram: [0; 0x2000],
             ex_ram: [0; 0x2000],
             wram: [0; 0x2000],
@@ -74,6 +78,19 @@ impl MMU {
         };
         // mmu.initiate();
         mmu
+    }
+
+    pub fn empty() -> Self {
+        MMU {
+            memory: [0; 0x8000],
+            vram: [0; 0x2000],
+            ex_ram: [0; 0x2000],
+            wram: [0; 0x2000],
+            oam: [0; 0xA0],
+            io_regs: [0; 0x80],
+            hram: [0; 0x7F],
+            interrupt_enable: 0,
+        }
     }
 
     fn initiate(&mut self) {
