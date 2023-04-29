@@ -1,3 +1,5 @@
+mod mbc;
+
 const NINTENDO_LOGO: [u8; 48] = [
     0xCE, 0xED, 0x66, 0x66, 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00, 0x83, 0x00, 0x0C, 0x00, 0x0D,
     0x00, 0x08, 0x11, 0x1F, 0x88, 0x89, 0x00, 0x0E, 0xDC, 0xCC, 0x6E, 0xE6, 0xDD, 0xDD, 0xD9, 0x99,
@@ -11,7 +13,7 @@ pub struct Cartridge {
     pub title: [u8; 15], // ignore manufacturer code
     pub cgb_flg: u8,
     pub sgb_flg: u8,
-    pub rom_type: u8, // https://gbdev.io/pandocs/The_Cartridge_Header.html#0147--cartridge-type
+    pub rom_type: u8, // MBC type: https://gbdev.io/pandocs/The_Cartridge_Header.html#0147--cartridge-type
     pub rom_size: u8,
     pub ram_size: u8,
     pub version: u8,
