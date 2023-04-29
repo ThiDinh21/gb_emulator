@@ -1,4 +1,8 @@
-use std::{fs::File, io::Read};
+mod mbc0;
+
+use std::{fs::File, io::Read, path};
+
+use self::mbc0::MBC0;
 
 pub trait MBC {
     fn read_rom(&self, addr: u16) -> u8;
@@ -9,7 +13,7 @@ pub trait MBC {
 
 /// Receive a path and return the correct MBC type,
 /// or error if unrecognized
-pub fn get_mbc(path: &str) -> Result<Box<dyn MBC + 'static>, &'static str> {
+pub fn get_mbc(path: path::PathBuf) -> Result<Box<dyn MBC + 'static>, &'static str> {
     let mut data: Vec<u8> = vec![];
     File::open(path)
         .and_then(|mut f| f.read_to_end(&mut data))
@@ -20,7 +24,7 @@ pub fn get_mbc(path: &str) -> Result<Box<dyn MBC + 'static>, &'static str> {
     }
 
     match data[0x0147] {
-        0x00 => todo!("MBC0"),
+        0x00 => Ok(Box::new(MBC0::new(data)?)),
         0x01..=0x03 => todo!("MBC1"),
         0x05..=0x06 => todo!("MBC2"),
         0x0F..=0x13 => todo!("MBC3"),
