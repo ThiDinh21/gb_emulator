@@ -1,4 +1,4 @@
-use crate::{cartridge::Cartridge, cpu::Mem};
+use crate::cpu::Mem;
 
 const VRAM: u16 = 0x8000;
 const VRAM_END: u16 = 0x9FFF;
@@ -61,13 +61,9 @@ impl Mem for MMU {
 }
 
 impl MMU {
-    pub fn new(rom: Cartridge) -> Self {
-        let memory: [u8; 0x8000] = (*rom.prg_rom.into_boxed_slice())
-            .try_into()
-            .expect("ROM has wrong size");
-
+    pub fn new() -> Self {
         let mut mmu = MMU {
-            memory,
+            memory: [0; 0x8000],
             vram: [0; 0x2000],
             ex_ram: [0; 0x2000],
             wram: [0; 0x2000],

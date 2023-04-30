@@ -1,5 +1,6 @@
 mod mbc0;
 mod mbc1;
+mod mbc2;
 
 use std::path::PathBuf;
 use std::{fs::File, io::Read};

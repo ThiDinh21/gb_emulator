@@ -1,4 +1,4 @@
-use crate::cartridge::mbc::MBC;
+use crate::cartridge::MBC;
 use std::{fs::File, io::Write, path::PathBuf};
 
 use super::get_ram_size;
