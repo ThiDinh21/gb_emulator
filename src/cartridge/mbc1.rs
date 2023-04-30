@@ -3,6 +3,7 @@ use std::{fs::File, io::Write, path::PathBuf};
 
 use super::get_ram_size;
 
+/// https://gbdev.io/pandocs/MBC1.html
 pub struct MBC1 {
     rom: Vec<u8>,
     ram: Vec<u8>,
@@ -63,10 +64,7 @@ impl MBC for MBC1 {
             // https://gbdev.io/pandocs/MBC1.html#20003fff--rom-bank-number-write-only
             0x2000..=0x3FFF => {
                 self.rom_bank_idx = (self.ram_bank_idx & 0b0110_0000) // to keep the 2 bits 5th and 6th in case rom bank > 5 bits
-                    | match data as usize & 0x1F {
-                        0 => 1,
-                        n => n,
-                    }
+                    | (data as usize & 0x1F).max(1)
             }
             // https://gbdev.io/pandocs/MBC1.html#40005fff--ram-bank-number--or--upper-bits-of-rom-bank-number-write-only
             0x4000..=0x5FFF => {
