@@ -22,12 +22,12 @@ impl MBC2 {
             save_file,
         };
 
-        mbc.load_ram();
+        mbc.load_save_file();
 
         Ok(mbc)
     }
 
-    fn load_ram(&mut self) {
+    fn load_save_file(&mut self) {
         match File::open(&self.save_file) {
             Ok(mut f) => {
                 f.write_all(&self.ram)

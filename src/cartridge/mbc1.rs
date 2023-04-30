@@ -1,3 +1,5 @@
+use log::info;
+
 use crate::cartridge::MBC;
 use std::{fs::File, io::Write, path::PathBuf};
 
@@ -22,7 +24,7 @@ impl MBC1 {
             _ => (None, 0),
         };
 
-        Ok(MBC1 {
+        let mut mbc = MBC1 {
             rom: raw,
             ram: vec![0; ram_size as usize],
             rom_bank_idx: 1,
@@ -30,7 +32,28 @@ impl MBC1 {
             ram_enabled: false,
             ram_selected: false,
             save_file,
-        })
+        };
+
+        mbc.load_save_file();
+
+        Ok(mbc)
+    }
+
+    fn load_save_file(&mut self) {
+        match &self.save_file {
+            Some(path) => {
+                match File::open(path) {
+                    Ok(mut f) => {
+                        f.write_all(&self.ram)
+                            .expect("Error loading save file. Save file corrupt?");
+                    }
+                    Err(_) => {
+                        dbg!("Unable to open save file");
+                    }
+                };
+            }
+            None => (),
+        }
     }
 }
 
