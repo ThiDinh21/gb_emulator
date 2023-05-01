@@ -9,3 +9,11 @@ edition = "2021"
 bitflags = "2.0.2"
 lazy_static = "1.4.0"
 log = "0.4.17"
+rgy = "0.1.0"
+minifb = "0.11"
+structopt = "0.2"
+cpal = "0.8"
+core_affinity = "0.8.0"
+font8x8 = { version = "0.2", default-features = false }
+
+[dev-dependencies]
