@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use crate::{
     cartridge::{get_mbc, MBC},
     cpu::Mem,
+    timer::Timer,
 };
 
 #[derive(PartialEq, Copy, Clone)]
@@ -19,6 +20,7 @@ pub struct MMU {
     vram: [u8; 0x2000],
     wram: [u8; 0x8000],
     wram_bank_idx: usize,
+    timer: Timer,
     oam: [u8; 0xA0],
     hram: [u8; 0x7F],
     pub interrupt_enable: u8,
@@ -37,6 +39,7 @@ impl MMU {
             vram: [0; 0x2000],
             wram: [0; 0x8000],
             wram_bank_idx: 1,
+            timer: Timer::new(),
             oam: [0; 0xA0],
             hram: [0; 0x7F],
             interrupt_enable: 0,
@@ -47,7 +50,11 @@ impl MMU {
     }
 
     fn initiate(&mut self) {
-        todo!()
+        unimplemented!()
+    }
+
+    fn execute_cycle(&mut self) {
+        unimplemented!()
     }
 }
 
@@ -62,7 +69,7 @@ impl Mem for MMU {
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00 => todo!("Joypad input"),
             0xFF01..=0xFF02 => unimplemented!("Serial transfer"),
-            0xFF04..=0xFF07 => unimplemented!("Timer and divider"),
+            0xFF04..=0xFF07 => self.timer.mem_read_u8(addr),
             0xFF10..=0xFF26 => unimplemented!("Audio"),
             0xFF30..=0xFF3F => unimplemented!("Wave pattern"),
             0xFF40..=0xFF4B => {
@@ -96,7 +103,7 @@ impl Mem for MMU {
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00 => todo!("Joypad input"),
             0xFF01..=0xFF02 => unimplemented!("Serial transfer"),
-            0xFF04..=0xFF07 => unimplemented!("Timer and divider"),
+            0xFF04..=0xFF07 => self.timer.mem_write_u8(addr, data),
             0xFF10..=0xFF26 => unimplemented!("Audio"),
             0xFF30..=0xFF3F => unimplemented!("Wave pattern"),
             0xFF40..=0xFF4B => {

@@ -1,8 +1,9 @@
-pub mod alu;
-pub mod cartridge;
-pub mod cpu;
-pub mod mmu;
-pub mod opcodes;
+mod alu;
+mod cartridge;
+mod cpu;
+mod mmu;
+mod opcodes;
+mod timer;
 
 fn main() {
     println!("Hello, world!");
