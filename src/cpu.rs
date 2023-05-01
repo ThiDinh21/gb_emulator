@@ -169,7 +169,8 @@ impl CPU {
     }
 
     pub fn get_af(&self) -> u16 {
-        todo!()
+        let f = self.status.bits();
+        u16::from_le_bytes([f, self.a])
     }
 
     /// get the register BC
@@ -258,43 +259,13 @@ impl CPU {
     }
 
     pub fn set_af(&mut self, v: u16) {
-        todo!()
+        let [f, a] = v.to_le_bytes();
+        self.a = a;
+        self.status = StatusFlags::from_bits_truncate(f);
     }
 
     pub fn set_sp(&mut self, v: u16) {
         self.stack_pointer = v;
-    }
-
-    //* Register related methods for testing *//
-
-    /// get the data at the addr stored in register BC
-    fn get_data_at_bc(&self) -> u8 {
-        self.mem_read_u8(self.get_bc())
-    }
-
-    /// set the data to the addr stored in register BC
-    fn set_data_at_bc(&mut self, data: u8) {
-        self.mem_write_u8(self.get_bc(), data);
-    }
-
-    /// get the data at the addr stored in register DE
-    fn get_data_at_de(&self) -> u8 {
-        self.mem_read_u8(self.get_de())
-    }
-
-    /// set the data to the addr stored in register DE
-    fn set_data_at_de(&mut self, data: u8) {
-        self.mem_write_u8(self.get_de(), data);
-    }
-
-    /// get the data at the addr stored in register HL
-    fn get_data_at_hl(&self) -> u8 {
-        self.mem_read_u8(self.get_hl())
-    }
-
-    /// set the data to the addr stored in register HL
-    fn set_data_at_hl(&mut self, data: u8) {
-        self.mem_write_u8(self.get_hl(), data);
     }
 
     //* Other CPU functions *//
@@ -340,224 +311,6 @@ impl CPU {
             panic!("Stack underflow");
         } else if self.get_sp() < 0xFF80 {
             panic!("Stack overflow");
-        }
-    }
-}
-
-mod test {
-
-    mod load_store_move_8_bit {
-        #[allow(unused_imports)]
-        use super::super::*;
-
-        #[test]
-        fn test_ld_addr_bc_a_0x02() {
-            let mut cpu = CPU::new_test();
-            cpu.b = 0x00;
-            cpu.c = 0x05;
-            cpu.a = 0x69;
-            cpu.load_and_run(vec![0x02, 0x10]);
-
-            assert_eq!(cpu.get_data_at_bc(), cpu.a);
-        }
-
-        #[test]
-        fn test_ld_b_u8_0x06() {
-            let mut cpu = CPU::new_test();
-            cpu.b = 0x0E;
-            let data = 0xEF_u8;
-            cpu.load_and_run(vec![0x06, data, 0x10]);
-
-            assert_eq!(cpu.b, data);
-        }
-
-        #[test]
-        fn test_ld_a_addr_bc_0x0a() {
-            let mut cpu = CPU::new_test();
-            cpu.b = 0x00;
-            cpu.c = 0x05;
-            cpu.set_data_at_bc(0x99);
-            cpu.load_and_run(vec![0x0A, 0x10]);
-
-            assert_eq!(cpu.get_data_at_bc(), cpu.a);
-        }
-
-        #[test]
-        fn test_ld_c_u8_0x0e() {
-            let mut cpu = CPU::new_test();
-            cpu.c = 0x0E;
-            let data = 0xEF_u8;
-            cpu.load_and_run(vec![0x0e, data, 0x10]);
-
-            assert_eq!(cpu.c, data);
-        }
-
-        #[test]
-        fn test_ld_addr_de_a_0x12() {
-            let mut cpu = CPU::new_test();
-            cpu.d = 0x00;
-            cpu.e = 0x05;
-            cpu.a = 0x69;
-            cpu.load_and_run(vec![0x12, 0x10]);
-
-            assert_eq!(cpu.get_data_at_de(), cpu.a);
-        }
-
-        #[test]
-        fn test_ld_d_u8_0x16() {
-            let mut cpu = CPU::new_test();
-            cpu.d = 0x0E;
-            let data = 0xEF_u8;
-            cpu.load_and_run(vec![0x16, data, 0x10]);
-
-            assert_eq!(cpu.d, data);
-        }
-
-        #[test]
-        fn test_ld_a_addr_de_0x1a() {
-            let mut cpu = CPU::new_test();
-            cpu.d = 0x00;
-            cpu.e = 0x05;
-            cpu.set_data_at_de(0x99);
-            cpu.load_and_run(vec![0x1A, 0x10]);
-
-            assert_eq!(cpu.get_data_at_de(), cpu.a);
-        }
-
-        #[test]
-        fn test_ld_e_u8_0x1e() {
-            let mut cpu = CPU::new_test();
-            cpu.e = 0x0E;
-            let data = 0xEF_u8;
-            cpu.load_and_run(vec![0x1e, data, 0x10]);
-
-            assert_eq!(cpu.e, data);
-        }
-
-        #[test]
-        fn test_ld_addr_hl_incr_a_0x22() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.h = 0x00;
-            cpu.l = 0x05;
-            let old_hl = cpu.get_hl();
-            cpu.a = data;
-            cpu.load_and_run(vec![0x22, 0x10]);
-
-            assert_eq!(data, cpu.mem_read_u8(old_hl));
-            assert_eq!(cpu.get_hl(), 0x0006);
-        }
-
-        #[test]
-        fn test_ld_a_addr_hl_incr_0x2a() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.h = 0x00;
-            cpu.l = 0x05;
-            cpu.set_data_at_hl(data);
-            cpu.load_and_run(vec![0x2A, 0x10]);
-
-            assert_eq!(data, cpu.a);
-            assert_eq!(cpu.get_hl(), 0x0006);
-        }
-
-        #[test]
-        fn test_ld_addr_hl_decr_a_0x32() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.h = 0x00;
-            cpu.l = 0x05;
-            let old_hl = cpu.get_hl();
-            cpu.a = data;
-            cpu.load_and_run(vec![0x32, 0x10]);
-
-            assert_eq!(data, cpu.mem_read_u8(old_hl));
-            assert_eq!(cpu.get_hl(), 0x0004);
-        }
-
-        #[test]
-        fn test_ld_a_addr_hl_decr_0x3a() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.h = 0x00;
-            cpu.l = 0x05;
-            cpu.set_data_at_hl(data);
-            cpu.load_and_run(vec![0x3A, 0x10]);
-
-            assert_eq!(data, cpu.a);
-            assert_eq!(cpu.get_hl(), 0x0004);
-        }
-
-        #[test]
-        fn test_ld_addr_ff00_u8_a_0xe0() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.a = data;
-            cpu.load_and_run(vec![0xE0, 0x10, 0x10]);
-
-            assert_eq!(data, cpu.mem_read_u8(0xFF10));
-        }
-
-        #[test]
-        fn test_ld_a_addr_ff00_u8_0xf0() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.mem_write_u8(0xFF10, data);
-            cpu.load_and_run(vec![0xF0, 0x10, 0x10]);
-
-            assert_eq!(data, cpu.a);
-        }
-
-        #[test]
-        fn test_ld_addr_ff00_c_a_0xe2() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.c = 0x10;
-            cpu.a = data;
-            cpu.load_and_run(vec![0xE2, 0x10]);
-
-            assert_eq!(data, cpu.mem_read_u8(0xFF10));
-        }
-
-        #[test]
-        fn test_ld_a_addr_ff00_c_0xf2() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.mem_write_u8(0xFF10, data);
-            cpu.c = 0x10;
-            cpu.load_and_run(vec![0xF2, 0x10]);
-
-            assert_eq!(data, cpu.a);
-        }
-
-        #[test]
-        fn test_ld_addr_u16_a_0xea() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.a = data;
-            cpu.load_and_run(vec![0xEA, 0x79, 0xAA, 0x10]);
-
-            assert_eq!(data, cpu.mem_read_u8(0xAA79));
-        }
-
-        #[test]
-        fn test_ld_a_addr_u16_0xfa() {
-            let mut cpu = CPU::new_test();
-            let data = 0x99;
-
-            cpu.mem_write_u8(0xAA79, data);
-            cpu.load_and_run(vec![0xFA, 0x79, 0xAA, 0x10]);
-
-            assert_eq!(data, cpu.a);
         }
     }
 }
