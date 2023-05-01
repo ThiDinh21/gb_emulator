@@ -3168,8 +3168,8 @@ impl CPU {
     #[allow(unused_variables)]
     fn op_00e8(&mut self, op_size: u8) -> u8 {
         let x = self.get_sp();
-        let y = self.mem_read_u8(self.program_counter) as u16;
-        let (res, z, h, c) = alu::add_u16(x, y, false);
+        let y = self.mem_read_u8(self.program_counter);
+        let (res, z, h, c) = alu::add_u16_signed(x, y, false);
         self.set_sp(res);
 
         self.status.remove(StatusFlags::Z);
@@ -3289,12 +3289,8 @@ impl CPU {
     /// LD HL,SP+i8
     #[allow(unused_variables)]
     fn op_00f8(&mut self, op_size: u8) -> u8 {
-        // Yo MAMA
-        let (res, _, h, c) = alu::add_u16(
-            self.get_sp(),
-            self.mem_read_u8(self.program_counter) as u16,
-            false,
-        );
+        let (res, _, h, c) =
+            alu::add_u16_signed(self.get_sp(), self.mem_read_u8(self.program_counter), false);
         self.set_hl(res);
 
         self.status.remove(StatusFlags::Z);
