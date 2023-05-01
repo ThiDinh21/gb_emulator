@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use crate::alu;
 use crate::cpu::{Mem, StatusFlags, CPU};
 use lazy_static::lazy_static;
