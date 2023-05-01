@@ -5,16 +5,24 @@ use crate::{
     cpu::Mem,
 };
 
+#[derive(PartialEq, Copy, Clone)]
+pub enum GbMode {
+    Classic,
+    Color,
+    ColorAsClassic,
+}
+
 /// Memory map:
 /// https://gbdev.io/pandocs/Memory_Map.html
 pub struct MMU {
-    mbc: Box<dyn MBC + 'static>,
+    pub mbc: Box<dyn MBC + 'static>,
     vram: [u8; 0x2000],
-    wram: [u8; 0x2000],
+    wram: [u8; 0x8000],
+    wram_bank_idx: usize,
     oam: [u8; 0xA0],
-    io_regs: [u8; 0x80],
     hram: [u8; 0x7F],
-    interrupt_enable: u8,
+    pub interrupt_enable: u8,
+    pub mode: GbMode,
 }
 
 impl MMU {
@@ -27,28 +35,16 @@ impl MMU {
         let mut mmu = MMU {
             mbc,
             vram: [0; 0x2000],
-            wram: [0; 0x2000],
+            wram: [0; 0x8000],
+            wram_bank_idx: 1,
             oam: [0; 0xA0],
-            io_regs: [0; 0x80],
             hram: [0; 0x7F],
             interrupt_enable: 0,
+            mode: GbMode::Classic,
         };
         // mmu.initiate();
         mmu
     }
-
-    // pub fn empty() -> Self {
-    //     MMU {
-    //         memory: [0; 0x8000],
-    //         vram: [0; 0x2000],
-    //         ex_ram: [0; 0x2000],
-    //         wram: [0; 0x2000],
-    //         oam: [0; 0xA0],
-    //         io_regs: [0; 0x80],
-    //         hram: [0; 0x7F],
-    //         interrupt_enable: 0,
-    //     }
-    // }
 
     fn initiate(&mut self) {
         todo!()
@@ -63,11 +59,26 @@ impl Mem for MMU {
             0xA000..=0xBFFF => self.mbc.read_ram(addr),
             0xC000..=0xDFFF => todo!("Work RAM"),
             0xFE00..=0xFE9F => todo!("OAM"),
-            0xFF00..=0xFF7F => todo!(),
+            0xFF00 => todo!("Joypad input"),
+            0xFF01..=0xFF02 => unimplemented!("Serial transfer"),
+            0xFF04..=0xFF07 => unimplemented!("Timer and divider"),
+            0xFF10..=0xFF26 => unimplemented!("Audio"),
+            0xFF30..=0xFF3F => unimplemented!("Wave pattern"),
+            0xFF40..=0xFF4B => {
+                unimplemented!("LCD Control, Status, Position, Scrolling, and Palettes")
+            }
+            0xFF4F => unimplemented!("VRAM Bank Select"),
+            0xFF50 => unimplemented!("Set to non-zero to disable boot ROM"),
+            0xFF51..=0xFF55 => unimplemented!("VRAM DMA"),
+            0xFF68..=0xFF69 => unimplemented!("BG / OBJ Palettes"),
+            0xFF70 => unimplemented!("WRAM bank"),
             0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize],
             0xFFFF => self.interrupt_enable,
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
                 panic!("Attempt to access prohibited memory region")
+            }
+            _ => {
+                panic!("Attempt to access unused memory region")
             }
         }
     }
@@ -79,11 +90,26 @@ impl Mem for MMU {
             0xA000..=0xBFFF => self.mbc.write_ram(addr, data),
             0xC000..=0xDFFF => todo!("Work RAM"),
             0xFE00..=0xFE9F => todo!("OAM"),
-            0xFF00..=0xFF7F => todo!(),
+            0xFF00 => todo!("Joypad input"),
+            0xFF01..=0xFF02 => unimplemented!("Serial transfer"),
+            0xFF04..=0xFF07 => unimplemented!("Timer and divider"),
+            0xFF10..=0xFF26 => unimplemented!("Audio"),
+            0xFF30..=0xFF3F => unimplemented!("Wave pattern"),
+            0xFF40..=0xFF4B => {
+                unimplemented!("LCD Control, Status, Position, Scrolling, and Palettes")
+            }
+            0xFF4F => unimplemented!("VRAM Bank Select"),
+            0xFF50 => unimplemented!("Set to non-zero to disable boot ROM"),
+            0xFF51..=0xFF55 => unimplemented!("VRAM DMA"),
+            0xFF68..=0xFF69 => unimplemented!("BG / OBJ Palettes"),
+            0xFF70 => unimplemented!("WRAM bank"),
             0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize] = data,
             0xFFFF => self.interrupt_enable = data,
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
                 panic!("Attempt to access prohibited memory region");
+            }
+            _ => {
+                panic!("Attempt to access unused memory region")
             }
         };
     }
