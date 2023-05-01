@@ -2,6 +2,7 @@ mod alu;
 mod cartridge;
 mod cpu;
 mod hw;
+mod loader;
 mod mmu;
 mod opcodes;
 mod timer;
