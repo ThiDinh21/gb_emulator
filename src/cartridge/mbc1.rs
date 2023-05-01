@@ -1,5 +1,3 @@
-use log::info;
-
 use crate::cartridge::MBC;
 use std::{fs::File, io::Write, path::PathBuf};
 
@@ -12,7 +10,7 @@ pub struct MBC1 {
     rom_bank_idx: usize,
     ram_bank_idx: usize,
     ram_enabled: bool,
-    ram_selected: bool,
+    ram_mode: bool,
     save_file: Option<PathBuf>,
 }
 
@@ -30,7 +28,7 @@ impl MBC1 {
             rom_bank_idx: 1,
             ram_bank_idx: 0,
             ram_enabled: false,
-            ram_selected: false,
+            ram_mode: false,
             save_file,
         };
 
@@ -62,9 +60,7 @@ impl MBC for MBC1 {
         let index = match addr {
             0x0000..=0x3FFF => addr as usize,
             0x4000..=0x7FFF => self.rom_bank_idx * 0x4000 + (addr as usize - 0x4000),
-            _ => {
-                return 0;
-            }
+            _ => return 0,
         };
 
         *self.rom.get(index).unwrap_or(&0)
@@ -91,14 +87,14 @@ impl MBC for MBC1 {
             }
             // https://gbdev.io/pandocs/MBC1.html#40005fff--ram-bank-number--or--upper-bits-of-rom-bank-number-write-only
             0x4000..=0x5FFF => {
-                if self.ram_selected {
+                if self.ram_mode {
                     self.ram_bank_idx = data as usize & 0b0000_0011;
                 } else {
                     self.rom_bank_idx =
                         (self.rom_bank_idx & 0x1F) | ((data as usize & 0b0000_0011) << 5);
                 }
             }
-            0x6000..=0x7FFF => self.ram_selected = data & 0b1 == 1,
+            0x6000..=0x7FFF => self.ram_mode = data & 0b1 == 1,
             _ => panic!("Cannot write to {addr:04x} - MBC1"),
         };
     }
@@ -108,11 +104,7 @@ impl MBC for MBC1 {
             return;
         }
 
-        let bank = if self.ram_selected {
-            self.ram_bank_idx
-        } else {
-            0
-        };
+        let bank = if self.ram_mode { self.ram_bank_idx } else { 0 };
         let index = bank * 0x2000 + (addr as usize - 0x2000);
 
         self.ram[index] = data;

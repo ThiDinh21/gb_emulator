@@ -1,6 +1,7 @@
 mod mbc0;
 mod mbc1;
 mod mbc2;
+mod mbc3;
 
 use std::path::PathBuf;
 use std::{fs::File, io::Read};
@@ -8,6 +9,7 @@ use std::{fs::File, io::Read};
 use self::mbc0::MBC0;
 use self::mbc1::MBC1;
 use self::mbc2::MBC2;
+use self::mbc3::MBC3;
 
 pub trait MBC {
     // a ROM bank size is 0x4000
@@ -33,8 +35,8 @@ pub fn get_mbc(path: PathBuf) -> Result<Box<dyn MBC + 'static>, &'static str> {
         0x00 => Ok(Box::new(MBC0::new(data)?)),
         0x01..=0x03 => Ok(Box::new(MBC1::new(data, path)?)),
         0x05..=0x06 => Ok(Box::new(MBC2::new(data, path)?)),
-        0x0F..=0x13 => todo!("MBC3"),
-        0x19..=0x1E => todo!("MBC5"),
+        0x0F..=0x13 => Ok(Box::new(MBC3::new(data, path)?)),
+        0x19..=0x1E => unimplemented!("MBC5"),
         _ => todo!("MBC format not supported. Only support MBC0, 1, 2, 3 and 5"),
     }
 }
