@@ -57,7 +57,8 @@ impl Mem for MMU {
             0x0000..=0x7FFF => self.mbc.read_rom(addr),
             0x8000..=0x9FFF => todo!("VRAM"),
             0xA000..=0xBFFF => self.mbc.read_ram(addr),
-            0xC000..=0xDFFF => todo!("Work RAM"),
+            0xC000..=0xCFFF => self.wram[addr as usize - 0xC000],
+            0xD000..=0xDFFF => self.wram[(self.wram_bank_idx * 0x1000) + (addr as usize - 0xC000)],
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00 => todo!("Joypad input"),
             0xFF01..=0xFF02 => unimplemented!("Serial transfer"),
@@ -71,7 +72,7 @@ impl Mem for MMU {
             0xFF50 => unimplemented!("Set to non-zero to disable boot ROM"),
             0xFF51..=0xFF55 => unimplemented!("VRAM DMA"),
             0xFF68..=0xFF69 => unimplemented!("BG / OBJ Palettes"),
-            0xFF70 => unimplemented!("WRAM bank"),
+            0xFF70 => self.wram_bank_idx as u8,
             0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize],
             0xFFFF => self.interrupt_enable,
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
@@ -88,7 +89,10 @@ impl Mem for MMU {
             0x0000..=0x7FFF => self.mbc.write_rom(addr, data),
             0x8000..=0x9FFF => todo!("VRAM"),
             0xA000..=0xBFFF => self.mbc.write_ram(addr, data),
-            0xC000..=0xDFFF => todo!("Work RAM"),
+            0xC000..=0xCFFF => self.wram[addr as usize - 0xC000] = data,
+            0xD000..=0xDFFF => {
+                self.wram[(self.wram_bank_idx * 0x1000) + (addr as usize - 0xC000)] = data
+            }
             0xFE00..=0xFE9F => todo!("OAM"),
             0xFF00 => todo!("Joypad input"),
             0xFF01..=0xFF02 => unimplemented!("Serial transfer"),
@@ -102,7 +106,7 @@ impl Mem for MMU {
             0xFF50 => unimplemented!("Set to non-zero to disable boot ROM"),
             0xFF51..=0xFF55 => unimplemented!("VRAM DMA"),
             0xFF68..=0xFF69 => unimplemented!("BG / OBJ Palettes"),
-            0xFF70 => unimplemented!("WRAM bank"),
+            0xFF70 => self.wram_bank_idx = data.max(1) as usize,
             0xFF80..=0xFFFE => self.hram[(addr - 0xFF80) as usize] = data,
             0xFFFF => self.interrupt_enable = data,
             0xE000..=0xFDFF | 0xFEA0..=0xFEFF => {
