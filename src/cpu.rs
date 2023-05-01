@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use crate::{mmu::MMU, opcodes::CPU_OPCODES};
 use bitflags::bitflags;
 
@@ -65,7 +67,7 @@ impl Mem for CPU {
 }
 
 impl CPU {
-    pub fn new() -> Self {
+    pub fn new(path: PathBuf) -> Self {
         CPU {
             a: 0,
             b: 0,
@@ -77,7 +79,23 @@ impl CPU {
             status: StatusFlags::from_bits_truncate(0x00),
             program_counter: 0,
             stack_pointer: 0,
-            mmu: MMU::empty(),
+            mmu: MMU::new(path),
+        }
+    }
+
+    pub fn new_test() -> Self {
+        CPU {
+            a: 0,
+            b: 0,
+            c: 0,
+            d: 0,
+            e: 0,
+            h: 0,
+            l: 0,
+            status: StatusFlags::from_bits_truncate(0x00),
+            program_counter: 0,
+            stack_pointer: 0,
+            mmu: MMU::new("lmao".into()),
         }
     }
 
@@ -334,7 +352,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_bc_a_0x02() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.b = 0x00;
             cpu.c = 0x05;
             cpu.a = 0x69;
@@ -345,7 +363,7 @@ mod test {
 
         #[test]
         fn test_ld_b_u8_0x06() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.b = 0x0E;
             let data = 0xEF_u8;
             cpu.load_and_run(vec![0x06, data, 0x10]);
@@ -355,7 +373,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_bc_0x0a() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.b = 0x00;
             cpu.c = 0x05;
             cpu.set_data_at_bc(0x99);
@@ -366,7 +384,7 @@ mod test {
 
         #[test]
         fn test_ld_c_u8_0x0e() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.c = 0x0E;
             let data = 0xEF_u8;
             cpu.load_and_run(vec![0x0e, data, 0x10]);
@@ -376,7 +394,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_de_a_0x12() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.d = 0x00;
             cpu.e = 0x05;
             cpu.a = 0x69;
@@ -387,7 +405,7 @@ mod test {
 
         #[test]
         fn test_ld_d_u8_0x16() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.d = 0x0E;
             let data = 0xEF_u8;
             cpu.load_and_run(vec![0x16, data, 0x10]);
@@ -397,7 +415,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_de_0x1a() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.d = 0x00;
             cpu.e = 0x05;
             cpu.set_data_at_de(0x99);
@@ -408,7 +426,7 @@ mod test {
 
         #[test]
         fn test_ld_e_u8_0x1e() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             cpu.e = 0x0E;
             let data = 0xEF_u8;
             cpu.load_and_run(vec![0x1e, data, 0x10]);
@@ -418,7 +436,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_hl_incr_a_0x22() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.h = 0x00;
@@ -433,7 +451,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_hl_incr_0x2a() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.h = 0x00;
@@ -447,7 +465,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_hl_decr_a_0x32() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.h = 0x00;
@@ -462,7 +480,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_hl_decr_0x3a() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.h = 0x00;
@@ -476,7 +494,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_ff00_u8_a_0xe0() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.a = data;
@@ -487,7 +505,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_ff00_u8_0xf0() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.mem_write_u8(0xFF10, data);
@@ -498,7 +516,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_ff00_c_a_0xe2() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.c = 0x10;
@@ -510,7 +528,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_ff00_c_0xf2() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.mem_write_u8(0xFF10, data);
@@ -522,7 +540,7 @@ mod test {
 
         #[test]
         fn test_ld_addr_u16_a_0xea() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.a = data;
@@ -533,7 +551,7 @@ mod test {
 
         #[test]
         fn test_ld_a_addr_u16_0xfa() {
-            let mut cpu = CPU::new();
+            let mut cpu = CPU::new_test();
             let data = 0x99;
 
             cpu.mem_write_u8(0xAA79, data);
