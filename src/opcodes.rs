@@ -651,7 +651,7 @@ impl CPU {
     /// DEC BC
     #[allow(unused_variables)]
     fn op_000b(&mut self, op_size: u8) -> u8 {
-        let (res, z, h, _) = alu::sub_u16(self.get_bc(), 1, false);
+        let res = self.get_bc().wrapping_sub(1);
         self.set_bc(res);
 
         8
@@ -826,7 +826,7 @@ impl CPU {
     /// DEC DE
     #[allow(unused_variables)]
     fn op_001b(&mut self, op_size: u8) -> u8 {
-        let (res, z, h, _) = alu::sub_u16(self.get_de(), 1, false);
+        let res = self.get_de().wrapping_sub(1);
         self.set_de(res);
 
         8
@@ -1029,7 +1029,7 @@ impl CPU {
     /// DEC HL
     #[allow(unused_variables)]
     fn op_002b(&mut self, op_size: u8) -> u8 {
-        let (res, z, h, _) = alu::sub_u16(self.get_hl(), 1, false);
+        let res = self.get_hl().wrapping_sub(1);
         self.set_hl(res);
 
         8
@@ -1206,7 +1206,7 @@ impl CPU {
     /// DEC SP
     #[allow(unused_variables)]
     fn op_003b(&mut self, op_size: u8) -> u8 {
-        let (res, z, h, _) = alu::sub_u16(self.get_sp(), 1, false);
+        let res = self.get_sp().wrapping_sub(1);
         self.set_sp(res);
 
         8
