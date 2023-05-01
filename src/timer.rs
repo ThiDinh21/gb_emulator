@@ -72,7 +72,7 @@ impl Mem for Timer {
 
     fn mem_write_u8(&mut self, addr: u16, data: u8) {
         match addr {
-            0xFF04 => self.divider = data,
+            0xFF04 => self.divider = 0,
             0xFF05 => self.counter = data,
             0xFF06 => self.modulo = data,
             0xFF07 => {
