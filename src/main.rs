@@ -18,8 +18,6 @@ mod timer;
 mod utils;
 
 fn main() {
-    println!("Hello, world!");
-
     let opt = Opt::from_args();
 
     let hw = Hardware::new(opt.ram.clone());
