@@ -127,12 +127,10 @@ impl MBC3 {
 
     fn calc_rtc_reg(&mut self) {
         unimplemented!("Latch RTC for MBC3");
-        todo!()
     }
 
     fn calc_rtc_result(&mut self) {
         unimplemented!("Latch RTC for MBC3");
-        todo!()
     }
 }
 
