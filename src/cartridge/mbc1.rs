@@ -82,7 +82,7 @@ impl MBC for MBC1 {
             0x0000..=0x1FFF => self.ram_enabled = data == 0x0A,
             // https://gbdev.io/pandocs/MBC1.html#20003fff--rom-bank-number-write-only
             0x2000..=0x3FFF => {
-                self.rom_bank_idx = (self.ram_bank_idx & 0b0110_0000) // to keep the 2 bits 5th and 6th in case rom bank > 5 bits
+                self.rom_bank_idx = (self.rom_bank_idx & 0b0110_0000) // to keep the 2 bits 5th and 6th in case rom bank > 5 bits
                     | (data as usize & 0x1F).max(1)
             }
             // https://gbdev.io/pandocs/MBC1.html#40005fff--ram-bank-number--or--upper-bits-of-rom-bank-number-write-only
